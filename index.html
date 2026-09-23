@@ -1,0 +1,541 @@
+<title>tasc Website Health Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#F4F5F1; --ink:#323E48; --muted:#5E6870; --line:#DDDFDA;
+  --accent:#556221; --accent-soft:#EEEFE9; --pop:#B5BD00;
+  --band:#323E48; --on-band:#FFFFFF; --band-muted:#ADB2B6;
+  --bad:#C8321F; --bad-soft:#FBE7E3; --warn:#B26B00; --warn-soft:#FBEFD9; --good:#556221; --good-soft:#E2E6CE;
+  --track:#EBECED; --on-bad:#FFFFFF;
+  --display:"Poppins", "Avenir Next", Avenir, Helvetica, Arial, sans-serif;
+  --body:Avenir, "Avenir Next", "Nunito Sans", Helvetica, Arial, sans-serif;
+}
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;padding:0 20px;}
+.wrap{max-width:880px;margin:0 auto;padding-block:48px 72px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+h2{font-size:1.6rem;font-weight:700}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0;max-width:66ch}
+.label{font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+section{display:flex;flex-direction:column;gap:20px}
+.num{font-variant-numeric:tabular-nums}
+
+/* header */
+header{display:flex;flex-direction:column;gap:16px;background:var(--band);color:var(--on-band);border-radius:8px;padding:36px clamp(20px,4vw,44px) 34px;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--pop)}
+header .label{color:var(--pop)}
+header .meta{color:var(--band-muted)}
+.brandbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:.01em}
+.brandbar span{font-family:var(--body);font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;background:var(--accent);color:#fff;padding:5px 12px;border-radius:40px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;color:var(--muted);font-size:.95rem}
+.lede{font-size:1.2rem;line-height:1.55}
+
+/* scores */
+.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.score{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:6px}
+.score .v{font-family:var(--display);font-size:2.4rem;font-weight:700;line-height:1}
+.score .v small{font-size:1rem;color:var(--muted);font-weight:500}
+.score .n{font-weight:700}
+.score .d{font-size:.9rem;color:var(--muted);line-height:1.4}
+.meter{height:6px;background:var(--track);border-radius:3px;overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;border-radius:3px}
+.bad{color:var(--bad)} .warn{color:var(--warn)} .good{color:var(--good)}
+.bg-bad{background:var(--bad)} .bg-warn{background:var(--warn)} .bg-good{background:var(--good)}
+@media (max-width:720px){.scores{grid-template-columns:repeat(2,1fr)}}
+
+/* top 3 */
+.top3{display:grid;gap:12px}
+.pick{display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+.pick .rank{font-family:var(--display);font-size:1.1rem;font-weight:700;color:#fff;background:var(--accent);width:38px;height:38px;border-radius:50%;display:grid;place-items:center}
+.pick p{color:var(--muted);font-size:.98rem}
+.pick h3{margin-bottom:4px}
+.tag{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:40px;white-space:nowrap}
+.t-low{background:var(--good-soft);color:var(--good)}
+.t-med{background:var(--warn-soft);color:var(--warn)}
+.t-high{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:560px){.pick{grid-template-columns:32px 1fr}.pick .tag{grid-column:2;justify-self:start}}
+
+/* problem blocks */
+.problem{border-top:1px solid var(--line);padding-top:36px}
+.sev{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.sev::before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
+.callout{background:var(--accent-soft);border-radius:8px;padding:16px 20px;border-left:4px solid var(--pop)}
+.callout p{max-width:none}
+.callout strong{color:var(--accent)}
+
+/* bar chart */
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:14px}
+.chart-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;align-items:baseline}
+.chart-head .label{color:var(--ink)}
+.chart-head span:last-child{font-size:.88rem;color:var(--muted)}
+.row{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:6px 16px;align-items:center}
+.row .what{font-size:.95rem;line-height:1.3}
+.row .what small{display:block;color:var(--muted);font-size:.82rem}
+.bar{position:relative;height:26px;background:var(--track);border-radius:4px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--bad);border-radius:4px}
+.bar b{position:absolute;top:50%;transform:translateY(-50%);font-size:.88rem;font-weight:700;padding-left:8px;white-space:nowrap}
+.bar b.on-bad{color:var(--on-bad)}
+.bar .limit{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.axis{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:16px;font-size:.8rem;color:var(--muted)}
+.axis div{position:relative;height:16px}
+.axis div span{position:absolute;transform:translateX(-50%)}
+.axis div span:first-child{transform:none}
+.axis div span:last-child{transform:translateX(-100%)}
+@media (max-width:560px){.row,.axis{grid-template-columns:1fr}.axis>span{display:none}}
+
+/* weight compare */
+.weight{display:grid;gap:10px}
+.weight .w{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;font-size:.95rem}
+.weight .bar{height:22px}
+.weight .ok i{background:var(--good)}
+
+ul.plain{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;max-width:66ch}
+ul.plain li::marker{color:var(--accent)}
+
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.box p{font-size:.97rem;color:var(--muted)}
+.big{font-family:var(--display);font-size:2rem;font-weight:700;line-height:1}
+@media (max-width:640px){.twocol{grid-template-columns:1fr}}
+
+/* images stat */
+.imgstat{display:flex;flex-wrap:wrap;gap:20px 36px;align-items:center}
+.dots{display:grid;grid-template-columns:repeat(20,12px);gap:4px}
+.dots i{width:12px;height:12px;border-radius:2px;background:var(--track)}
+.dots i.m{background:var(--bad)}
+
+/* smaller fixes */
+.fixes{display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.fix{display:grid;grid-template-columns:1fr 1.3fr;gap:6px 20px;padding:14px 20px;border-top:1px solid var(--line)}
+.fix:first-child{border-top:0}
+.fix strong{font-weight:600}
+.fix span{color:var(--muted);font-size:.95rem}
+@media (max-width:600px){.fix{grid-template-columns:1fr}}
+
+/* working */
+.working{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 24px}
+.working li{list-style:none;display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:.98rem}
+.working li::before{content:"";width:12px;height:7px;border-left:2.5px solid var(--good);border-bottom:2.5px solid var(--good);transform:rotate(-45deg);margin-top:7px}
+.working{padding:0;margin:0}
+@media (max-width:640px){.working{grid-template-columns:1fr}}
+
+/* plan table */
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.95rem}
+th,td{text-align:left;padding:12px 16px;border-top:1px solid var(--line);vertical-align:top}
+th{border-top:0;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr.phase td{background:var(--accent-soft);font-weight:700;font-size:.85rem;letter-spacing:.04em;color:var(--accent)}
+td:last-child{white-space:nowrap}
+
+/* real shopper cards */
+.rs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rs .box{gap:4px}
+.rs-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.m-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:.95rem}
+.m-row small{display:block;color:var(--muted);font-size:.8rem}
+.m-row .val{font-weight:700;font-variant-numeric:tabular-nums}
+.pill{font-size:.75rem;font-weight:700;padding:4px 11px;border-radius:40px;white-space:nowrap;text-align:center}
+.p-good{background:var(--good-soft);color:var(--good)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:640px){.rs{grid-template-columns:1fr}}
+/* competitors */
+table.comp{min-width:520px}
+table.glance td:first-child{font-weight:700;width:30%}
+table.glance td:nth-child(2){color:var(--muted)}
+table.comp td{vertical-align:middle}
+table.comp tr.us td{background:var(--accent-soft);font-weight:700}
+/* search listing illustration */
+.serps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.serp{background:#FFFFFF;border:1px solid #DADCE0;border-radius:8px;padding:16px 18px;font-family:Arial,Helvetica,sans-serif;color:#202124;display:flex;flex-direction:column;gap:4px;min-width:0}
+.serp .tagline{font-family:var(--body);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5E6870;margin-bottom:6px}
+.serp .site{font-size:13px;color:#202124}
+.serp .site small{display:block;color:#4D5156;font-size:12px}
+.serp .t{font-size:19px;line-height:1.3;color:#1A0DAB}
+.serp .t.cut{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){.serps{grid-template-columns:1fr}}
+/* structured data grid */
+table.sd td:first-child{font-weight:700;white-space:normal}
+table.sd td:first-child small{display:block;font-weight:400;color:var(--muted);font-size:.82rem}
+table.sd td:nth-child(3){white-space:nowrap}
+table.sd td:last-child{white-space:normal;color:var(--muted)}
+.gaps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gap{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.gap .have{font-size:.8rem;font-weight:700;color:var(--bad)}
+.gap p{font-size:.95rem;color:var(--muted)}
+@media (max-width:640px){.gaps{grid-template-columns:1fr}}
+.lists{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.lst{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem;line-height:1.35}
+.lst a{color:var(--ink);text-decoration:none;font-weight:600}
+.lst a:hover{text-decoration:underline}
+@media (max-width:760px){.lists{grid-template-columns:1fr 1fr}}
+.limits p,.limits li{color:var(--muted);font-size:.95rem}
+footer{background:var(--band);color:var(--band-muted);font-size:.85rem;padding:18px 22px;border-radius:8px}
+
+/* ===== B: Editorial ===== */
+body{font-size:17.5px}
+body .wrap{max-width:800px;gap:88px}
+body header{background:transparent;color:var(--ink);padding:24px 0 36px;border-radius:0}
+body header::after{height:3px;background:var(--ink)}
+body header .meta{color:var(--muted)}
+body .brandbar{color:var(--ink)}
+body h1{font-size:clamp(2.4rem,6vw,3.8rem);line-height:1.05;letter-spacing:-.02em}
+body .lede{font-size:1.3rem;line-height:1.5}
+body h2{font-size:clamp(1.7rem,4vw,2.3rem);letter-spacing:-.01em}
+body .problem{border-top:0;padding-top:0}
+body :is(.score,.box,.gap,.chart,.tablewrap,.fixes,.lst,.callout){background:transparent;border:0;border-top:2px solid var(--ink);border-radius:0;padding-left:0;padding-right:0}
+body .callout{border-left:0;border-top-color:var(--pop);border-top-width:4px}
+body .serp{border-radius:0}
+body tr.phase td, body table.comp tr.us td{background:transparent}
+body th{padding-left:0}
+body td{padding-left:0}
+body .score .v{font-size:3.2rem}
+body .sev,body .label{font-size:.85rem}
+body footer{background:transparent;border-top:2px solid var(--ink);border-radius:0;padding-inline:0;color:var(--muted)}
+
+/* ===== D: Olive ===== */
+body{--bg:#FFFFFF;--surface:#FFFFFF;--line:#D8DBC9;--band:#556221;--band-muted:#E2E6CE;--accent-soft:#E2E6CE;--track:#E4E6DA}
+body{--bg:#FFFFFF;--surface:#FFFFFF;--line:#D8DBC9;--band:#556221;--band-muted:#E2E6CE;--accent-soft:#E2E6CE;--track:#E4E6DA}
+body header .brandbar span{background:var(--pop);color:#232B32}
+body header::after{background:#323E48}
+body :is(.score,.box,.gap,.chart,.tablewrap,.fixes,.lst,.pick,header,footer,.serp){border-radius:16px}
+body .problem{border-top:0;padding-top:8px}
+body h2{color:var(--accent)}
+body .callout{border-left:0;border-radius:16px;background:var(--surface)}
+
+/* ===== Editorial + Olive ===== */
+body header{background:var(--band);color:var(--on-band);padding:44px clamp(22px,5vw,56px) 46px;border-radius:16px}
+body header::after{height:6px;background:var(--pop)}
+body header .meta{color:var(--band-muted)}
+body .brandbar{color:var(--on-band)}
+body :is(.score,.box,.gap,.chart,.tablewrap,.fixes,.lst){border-radius:0;border-top-color:var(--accent)}
+body footer{border-top-color:var(--accent);border-radius:0}
+h2{color:var(--accent)}
+
+/* ===== side menu ===== */
+.sidenav{display:none}
+@media (min-width:1000px){
+  body .wrap{max-width:1100px;display:grid;grid-template-columns:190px minmax(0,1fr);column-gap:56px;align-content:start}
+  .wrap>*{grid-column:2}
+  .sidenav{display:flex;flex-direction:column;gap:0;grid-column:1;grid-row:1 / span 30;position:sticky;top:calc(env(safe-area-inset-top,0px) + 32px);align-self:start;padding-top:8px}
+}
+.sidenav .nav-title{font-family:var(--display);font-weight:700;font-size:1rem;color:var(--accent);padding:0 0 10px 14px}
+.sidenav a{color:var(--muted);text-decoration:none;font-size:.92rem;font-weight:600;padding:6px 0 6px 14px;border-left:2px solid var(--line);line-height:1.3}
+.sidenav a:hover{color:var(--ink);border-left-color:var(--accent)}
+.sidenav a[aria-current="true"]{color:var(--accent);border-left:3px solid var(--pop);padding-left:13px}
+.sidenav a:focus-visible{outline:2px solid var(--pop);outline-offset:2px}
+section[id],section[aria-labelledby]{scroll-margin-top:24px}
+</style>
+
+<div class="wrap">
+<nav class="sidenav" aria-label="Report sections">
+  <span class="nav-title">tasc status report</span>
+  <a href="#scores">Scorecard</a>
+  <a href="#glance">At a glance</a>
+  <a href="#p1">Speed</a>
+  <a href="#pc">Competitors</a>
+  <a href="#p2">Product &amp; blog details</a>
+  <a href="#psd">Page by page</a>
+  <a href="#pai">AI visibility</a>
+  <a href="#p3">Images</a>
+  <a href="#p4">Search listings</a>
+  <a href="#p5">Working well</a>
+  <a href="#p7">About this check</a>
+</nav>
+
+
+<header>
+  <div class="brandbar">tasc Performance<span>Status report</span></div>
+  <h1>Where the website stands with search engines and AI</h1>
+  <div class="meta"><span>tascperformance.com</span><span>As of 23 September 2026</span><span>Shopify store</span></div>
+  <p class="lede">Overall the site is in solid shape. Search engines and AI tools can find and read every page, most shoppers get pages that load quickly, and tasc holds its own on speed against other activewear brands. The weak spots are the details search engines and AI tools receive about products and blog posts, a homepage that jumps around while it loads, and pages that carry far more weight than they need.</p>
+</header>
+
+<section aria-labelledby="scores">
+  <h2 id="scores">Scorecard</h2>
+  <p>A standard lab test (Google Lighthouse) grades the homepage out of 100 in four areas, using a simulated older phone on a slow connection. It is a stress test, so the speed score is harsher than what most shoppers see.</p>
+  <div class="scores">
+    <div class="score"><span class="n">Speed</span><span class="v bad num">8<small> /100</small></span><div class="meter"><i class="bg-bad" style="width:8%"></i></div><span class="d">Poor under stress. Real shoppers fare better (see below).</span></div>
+    <div class="score"><span class="n">Site quality</span><span class="v warn num">57<small> /100</small></span><div class="meter"><i class="bg-warn" style="width:57%"></i></div><span class="d">Several technical issues outstanding.</span></div>
+    <div class="score"><span class="n">Accessibility</span><span class="v warn num">87<small> /100</small></span><div class="meter"><i class="bg-warn" style="width:87%"></i></div><span class="d">Mostly fine. Many images lack descriptions.</span></div>
+    <div class="score"><span class="n">Search basics</span><span class="v good num">100<small> /100</small></span><div class="meter"><i class="bg-good" style="width:100%"></i></div><span class="d">Perfect. Search engines can find and read every page.</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="glance">
+  <h2 id="glance">At a glance</h2>
+  <div class="tablewrap">
+    <table class="glance">
+      <thead><tr><th>Area</th><th>Where it stands</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Search engines finding and reading pages</td><td>Every page is reachable and readable. No broken redirects or duplicate pages.</td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Speed for real shoppers, whole site</td><td>Passes all three standard speed checks on phones.</td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Speed against competitors</td><td>Level with Free Fly; ahead of Vuori, lululemon and Rhone.</td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Homepage while loading</td><td>Content jumps around as images arrive. The one speed check tasc fails.</td><td><span class="pill p-bad">Poor</span></td></tr>
+        <tr><td>Page weight</td><td>Homepage is 11.5 MB against a typical 2 MB. Most shoppers don't feel it yet.</td><td><span class="pill p-bad">Poor</span></td></tr>
+        <tr><td>Blog post details for search and AI</td><td>Broken on every post checked (13 of 13), so search engines ignore them. Likely all 290.</td><td><span class="pill p-bad">Broken</span></td></tr>
+        <tr><td>Product details for search and AI</td><td>Sent twice on reviewed products, with conflicts. No shipping or returns info.</td><td><span class="pill p-warn">Needs work</span></td></tr>
+        <tr><td>Image descriptions</td><td>42% of images have none.</td><td><span class="pill p-warn">Needs work</span></td></tr>
+        <tr><td>Titles and descriptions in search</td><td>Homepage title and many product descriptions get cut off.</td><td><span class="pill p-warn">Needs work</span></td></tr>
+        <tr><td>AI visibility</td><td>AI tools can read and shop the site. The brand story they get is thin, and tasc appears in 2 of 5 "best of" lists checked.</td><td><span class="pill p-warn">Mixed</span></td></tr>
+        <tr><td>Collection pages</td><td>Well written and well set up for search.</td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Company and store details</td><td>Complete. Stores link to the homepage rather than the store page.</td><td><span class="pill p-good">Good</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROBLEM 1 -->
+<section class="problem" aria-labelledby="p1">
+  <span class="sev bad">Serious</span>
+  <h2 id="p1">The homepage jumps around, and the pages are too heavy</h2>
+  <p>Search engines factor real shoppers' speed into rankings. Google, the largest, collects this from Chrome users and checks three things on phones: how fast the main content shows, how fast the page responds to a tap, and whether the page stays still while loading. Across the whole site, tasc passes all three. The homepage fails one.</p>
+
+  <div class="rs">
+    <div class="box">
+      <div class="rs-head"><h3>Whole site</h3><span class="pill p-good">Passes</span></div>
+      <div class="m-row"><span>Main content shows<small>limit 2.5 sec</small></span><span class="val">1.4 sec</span><span class="pill p-good">Good</span></div>
+      <div class="m-row"><span>Responds to a tap<small>limit 0.2 sec</small></span><span class="val">0.19 sec</span><span class="pill p-good">Good</span></div>
+      <div class="m-row"><span>Stays still while loading<small>limit 0.10</small></span><span class="val">0.07</span><span class="pill p-good">Good</span></div>
+    </div>
+    <div class="box">
+      <div class="rs-head"><h3>Homepage</h3><span class="pill p-bad">Fails</span></div>
+      <div class="m-row"><span>Main content shows<small>limit 2.5 sec</small></span><span class="val">1.9 sec</span><span class="pill p-good">Good</span></div>
+      <div class="m-row"><span>Responds to a tap<small>limit 0.2 sec</small></span><span class="val">0.17 sec</span><span class="pill p-good">Good</span></div>
+      <div class="m-row"><span>Stays still while loading<small>limit 0.10</small></span><span class="val">0.29</span><span class="pill p-bad">Poor</span></div>
+    </div>
+  </div>
+  <p style="font-size:.9rem;color:var(--muted)">Real shoppers on phones, 28 days to 19 September 2026. Source: Google PageSpeed Insights (Chrome user data). "Responds to a tap" is close to its limit on the whole site, so it is worth watching.</p>
+
+  <h3>Under a stress test, the homepage misses every limit</h3>
+  <p>On a simulated older phone with a slow connection, the homepage is far over every limit. Most shoppers don't see this today. It shows how much weight the pages carry, and shoppers with older phones or weak signal get the closest to it.</p>
+
+  <div class="chart" role="img" aria-label="Bar chart: how many times over the recommended limit each speed measure is. Time until usable 13.8 times, main content 10.5 times, page jumping 10.4 times, page frozen 8.3 times, page filling in 6.2 times, first thing on screen 1.8 times.">
+    <div class="chart-head"><span class="label">Stress test: how far over the recommended limit</span><span>Black line = recommended limit</span></div>
+    <div class="row"><div class="what">Time until you can use the page<small>52.5 sec (limit 3.8)</small></div><div class="bar"><i style="width:98.6%"></i><b class="num on-bad" style="left:auto;right:8px">13.8×</b><span class="limit" style="left:7.1%"></span></div></div>
+    <div class="row"><div class="what">Time until main content shows<small>26.3 sec (limit 2.5)</small></div><div class="bar"><i style="width:75%"></i><b class="num" style="left:75%">10.5×</b><span class="limit" style="left:7.1%"></span></div></div>
+    <div class="row"><div class="what">How much the page jumps while loading<small>score 1.04 (limit 0.1)</small></div><div class="bar"><i style="width:74.3%"></i><b class="num" style="left:74.3%">10.4×</b><span class="limit" style="left:7.1%"></span></div></div>
+    <div class="row"><div class="what">Time the page is frozen<small>1.7 sec (limit 0.2)</small></div><div class="bar"><i style="width:59.3%"></i><b class="num" style="left:59.3%">8.3×</b><span class="limit" style="left:7.1%"></span></div></div>
+    <div class="row"><div class="what">Time until the page looks complete<small>21.2 sec (limit 3.4)</small></div><div class="bar"><i style="width:44.3%"></i><b class="num" style="left:44.3%">6.2×</b><span class="limit" style="left:7.1%"></span></div></div>
+    <div class="row"><div class="what">Time until anything shows<small>3.2 sec (limit 1.8)</small></div><div class="bar"><i style="width:12.9%"></i><b class="num" style="left:12.9%">1.8×</b><span class="limit" style="left:7.1%"></span></div></div>
+    <div class="axis"><span></span><div><span>0</span><span style="left:35.7%">5×</span><span style="left:71.4%">10×</span><span style="left:100%">14×</span></div></div>
+  </div>
+  <p style="font-size:.9rem;color:var(--muted)">The top bar is 13.8× over. Google Lighthouse lab test of the homepage, 23 September 2026.</p>
+
+  <div class="twocol">
+    <div class="box">
+      <h3>Why the pages are heavy</h3>
+      <p>The homepage downloads 11.5 MB. A healthy store page is about 2 MB. Much of that is code for add-on apps (Yotpo reviews, Klaviyo email sign-up and others) that loads before the page itself. About 2 MB of it is never even used on the homepage.</p>
+      <div class="weight" aria-label="Page size compared">
+        <div class="w"><span>tasc homepage</span><div class="bar"><i style="width:100%"></i><b style="left:auto;right:8px" class="num on-bad">11.5 MB</b></div></div>
+        <div class="w ok"><span>Healthy target</span><div class="bar"><i style="width:17.4%"></i><b class="num" style="left:17.4%">2 MB</b></div></div>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Why the page jumps around</h3>
+      <p>Images on the site don't tell the browser how big they are, so the browser can't save room for them. As each image arrives, everything below it gets pushed down. Shoppers go to tap something and it moves. This is the problem real shoppers are hitting on the homepage.</p>
+      <p>The cause sits in the site's theme, so it behaves the same way wherever those images appear.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- COMPETITORS -->
+<section class="problem" aria-labelledby="pc">
+  <span class="label">How tasc compares</span>
+  <h2 id="pc">Speed for real shoppers, next to other activewear brands</h2>
+  <p>This compares each brand's whole site, using the same real-shopper data from Chrome users on phones.</p>
+  <div class="tablewrap">
+    <table class="comp">
+      <thead><tr><th>Brand</th><th>Loads quickly</th><th>Responds to taps</th><th>Stays still</th></tr></thead>
+      <tbody>
+        <tr class="us"><td>tasc Performance</td><td><span class="pill p-good">Good</span></td><td><span class="pill p-good">Good</span></td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Free Fly</td><td><span class="pill p-good">Good</span></td><td><span class="pill p-good">Good</span></td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Vuori</td><td><span class="pill p-good">Good</span></td><td><span class="pill p-warn">Needs work</span></td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>lululemon</td><td><span class="pill p-good">Good</span></td><td><span class="pill p-warn">Needs work</span></td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Rhone</td><td><span class="pill p-bad">Poor</span></td><td><span class="pill p-warn">Needs work</span></td><td><span class="pill p-good">Good</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Across the whole site, tasc is level with Free Fly and ahead of Vuori, lululemon and Rhone on how quickly pages respond to a tap. Speed is not a weakness against these brands overall. The gap is the homepage, which is the first page many shoppers see.</p>
+  <p style="font-size:.9rem;color:var(--muted)">Source: Google CrUX Vis, phone data as of 19 September 2026. Whole-site results; homepage-only data wasn't compared.</p>
+</section>
+
+<!-- PROBLEM 2 -->
+<section class="problem" aria-labelledby="p2">
+  <span class="sev bad">Serious</span>
+  <h2 id="p2">Search engines can't use the product and blog details</h2>
+  <p>Behind each page, the site gives search engines and AI tools a short summary of what's on it: a product's price and star rating, or a blog post's title and author. Search engines use this to show extras in results, like review stars under a product link. Two mistakes are stopping that from working.</p>
+
+  <div class="twocol">
+    <div class="box">
+      <span class="label">Blog posts</span>
+      <div class="big num">290 posts</div>
+      <p>The summary on every blog post has a formatting error, so search engines throw it away. In effect, no post is sending this information. All 10 posts checked had the problem.</p>
+      <p><strong style="color:var(--ink)">Cause:</strong> a formatting error in the blog template, so every post is affected the same way.</p>
+    </div>
+    <div class="box">
+      <span class="label">Product pages</span>
+      <div class="big num">618 products</div>
+      <p>Every product with reviews sends two different summaries: one from the Shopify theme with all sizes and prices, and one from the Yotpo reviews app with the star rating but only one price. Search engines may pick either, or trust neither. If it picks the theme's version, ratings like 4.9 stars from 589 reviews won't show in search results. On 5 of the 13 products checked, the two even disagree on whether the item is in stock.</p>
+      <p><strong style="color:var(--ink)">Cause:</strong> the Shopify theme and the Yotpo reviews app each add their own version.</p>
+    </div>
+  </div>
+  <div class="callout"><p><strong>Worth knowing:</strong> resolving the product issue means settling on one of the two versions. Which one depends on how Yotpo's star ratings are set up, so it involves Yotpo as well as the site theme.</p></div>
+  <p>Collection pages (like Women's Yoga) send clean, correct details, so the problem is limited to the product and blog templates.</p>
+</section>
+
+
+<!-- STRUCTURED DATA LAYER -->
+<section class="problem" aria-labelledby="psd">
+  <span class="label">Page by page</span>
+  <h2 id="psd">What each type of page tells search engines and AI</h2>
+  <p>Besides the words on the page, each page can send search engines and AI tools a hidden fact sheet: price, stock, star rating, store hours, publish date. Search engines use it to add extras to results, like stars, prices and store details. Here is what tasc's pages send today.</p>
+  <div class="tablewrap">
+    <table class="sd">
+      <thead><tr><th>Page type</th><th>What they get now</th><th>Status</th><th>What's at stake</th></tr></thead>
+      <tbody>
+        <tr><td>Product pages<small>618 pages</small></td><td>Name, price, sizes, stock and brand. Star ratings on reviewed products, but sent twice with conflicting details.</td><td><span class="pill p-warn">Needs work</span></td><td>Review stars, price and stock under product links</td></tr>
+        <tr><td>Blog posts<small>290 pages</small></td><td>Nothing usable. The fact sheet is broken, so it gets thrown away.</td><td><span class="pill p-bad">Broken</span></td><td>Publish date, image and author shown with articles</td></tr>
+        <tr><td>Collection pages<small>71 pages</small></td><td>What the page is, its first 10 products, and where it sits in the site.</td><td><span class="pill p-good">Good</span></td><td>Working as intended</td></tr>
+        <tr><td>Homepage</td><td>Company name, logo, contact details, social profiles, all four stores, and the site search box.</td><td><span class="pill p-good">Good</span></td><td>Working as intended; two small notes below</td></tr>
+        <tr><td>Store locations page</td><td>Only its place in the site. The store addresses and hours sit on the homepage instead.</td><td><span class="pill p-warn">Needs work</span></td><td>Stronger showing in "near me" and city searches</td></tr>
+        <tr><td>UPF sun protection FAQ</td><td>Questions and answers, but split into four separate sets on one page.</td><td><span class="pill p-warn">Needs work</span></td><td>Possible errors flagged by search engines</td></tr>
+        <tr><td>Main FAQ, blog homepage, other pages</td><td>Only their place in the site.</td><td><span class="pill p-good">Fine</span></td><td>Low priority</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Details missing from every product page</h3>
+  <p>Search engines recommend these for online stores. None of the 19 product pages checked include them, so none of these extras can appear with tasc products today.</p>
+  <div class="gaps">
+    <div class="gap"><span class="have">0 of 19 pages</span><h3>Shipping cost and delivery time</h3><p>Lets search results and shopping tools show "Free shipping" or delivery times next to the product.</p></div>
+    <div class="gap"><span class="have">0 of 19 pages</span><h3>Return policy</h3><p>Lets search results show the return terms (for example, "Free 30-day returns") next to products.</p></div>
+    <div class="gap"><span class="have">0 of 19 pages</span><h3>Barcodes</h3><p>Barcode numbers help search engines match each product to shopping searches and price comparisons.</p></div>
+    <div class="gap"><span class="have">0 of 19 pages</span><h3>Sizes and colors grouped together</h3><p>Each size is listed separately today, so search engines don't see them as one product that comes in several options.</p></div>
+  </div>
+  <div class="callout"><p><strong>Worth knowing:</strong> this check only looked at the website. If tasc uses Google Shopping, shipping and returns may already reach Google through Google Merchant Center.</p></div>
+
+  <h3>Two smaller notes on the homepage</h3>
+  <ul class="plain">
+    <li>The four stores' details sit on the homepage and link back to it, rather than to the store locations page.</li>
+    <li>The homepage's "you are here" trail uses the full 82-character page title as its label instead of "Home".</li>
+  </ul>
+</section>
+
+<!-- AI VISIBILITY -->
+<section class="problem" aria-labelledby="pai">
+  <span class="label">AI visibility</span>
+  <h2 id="pai">How the site looks to AI tools</h2>
+  <p>More shoppers now ask ChatGPT, Google's AI answers, Perplexity or Claude what to buy. These tools read websites much like search engines do, but they also lean heavily on what other sites say about a brand. Here is where tasc stands.</p>
+  <div class="tablewrap">
+    <table class="sd">
+      <thead><tr><th>Question</th><th>Where it stands</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Can AI tools read the site?</td><td>Yes. The site's rules for automated visitors let in every major AI tool, including those from OpenAI, Anthropic, Perplexity and Google.</td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Can AI shopping assistants shop it?</td><td>Yes. Shopify has switched on a direct connection that lets AI assistants search the catalog and fill a cart. The shopper still approves payment.</td><td><span class="pill p-good">Good</span></td></tr>
+        <tr><td>Can they see the product details?</td><td>Names, prices, descriptions, sizes and the overall review summary are all in the page itself. Individual reviews only load after the page opens, so many AI tools never see them.</td><td><span class="pill p-good">Mostly good</span></td></tr>
+        <tr><td>Does the site introduce itself to AI tools?</td><td>There is a page written for AI assistants, but it is Shopify's standard text. It mostly promotes Shopify's own Shop app and says nothing about tasc's fabrics, fit, stores or return policy.</td><td><span class="pill p-warn">Needs work</span></td></tr>
+        <tr><td>Are the product and article fact sheets usable?</td><td>AI tools use the same hidden fact sheets as search engines. The blog and product problems covered above affect them too.</td><td><span class="pill p-warn">Needs work</span></td></tr>
+        <tr><td>Is tasc in the "best of" lists AI tools draw on?</td><td>In 2 of the 5 roundups checked. Missing from both of The Good Trade's lists, which feature Vuori.</td><td><span class="pill p-warn">Mixed</span></td></tr>
+        <tr><td>Is the brand name clear?</td><td>tasc has no Wikipedia page, and "TASC" is also the name of a defense contractor and a school exam. AI tools can mix them up.</td><td><span class="pill p-warn">Needs work</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>"Best of" roundups checked</h3>
+  <div class="lists">
+    <div class="lst"><a href="https://www.bambooforthewin.com/bamboo-news/top-10-bamboo-clothing-brands/" target="_blank" rel="noopener">Top 10 Bamboo Clothing Brands</a><span>Bamboo For The Win</span><span class="pill p-good">tasc listed first</span></div>
+    <div class="lst"><a href="https://www.sportcasuals.com/news/bamboo-activewear-brands" target="_blank" rel="noopener">7 Activewear Brands Using Bamboo</a><span>Sport Casuals Intl.</span><span class="pill p-good">tasc listed</span></div>
+    <div class="lst"><a href="https://www.thegoodtrade.com/features/sustainable-mens-activewear/" target="_blank" rel="noopener">Sustainable Activewear for Men</a><span>The Good Trade</span><span class="pill p-bad">Not listed</span></div>
+    <div class="lst"><a href="https://www.thegoodtrade.com/features/best-sustainable-activewear/" target="_blank" rel="noopener">Best Sustainable Activewear</a><span>The Good Trade</span><span class="pill p-bad">Not listed</span></div>
+    <div class="lst"><a href="https://fromthelabels.com/blog/10-best-sustainable-activewear-brands-worth-trying" target="_blank" rel="noopener">10 Best Sustainable Activewear Brands</a><span>FromTheLabels</span><span class="pill p-bad">Not listed</span></div>
+  </div>
+  <p>tasc does have a long trail of individual reviews from outdoor, golf and fitness sites, including <a href="https://gearjunkie.com/apparel/tasc-bamboo-apparel-shirts-review" target="_blank" rel="noopener" style="color:var(--accent)">GearJunkie</a> and <a href="https://practical-golf.com/tasc-performance-review" target="_blank" rel="noopener" style="color:var(--accent)">Practical Golf</a>. Many are several years old, and AI tools tend to favor recent sources.</p>
+  <div class="callout"><p><strong>Worth knowing:</strong> this section describes what AI tools can see, not what they actually say. Checking how ChatGPT, Google's AI answers and others describe tasc takes repeated test questions over several weeks, because their answers vary from one day to the next.</p></div>
+</section>
+
+<!-- PROBLEM 3 -->
+<section class="problem" aria-labelledby="p3">
+  <span class="sev warn">Moderate</span>
+  <h2 id="p3">Almost half the images have no description</h2>
+  <div class="imgstat">
+    <div class="dots" aria-label="42 of every 100 images have no description">
+      <!-- 100 dots, 42 red -->
+      <i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:40ch">
+      <div class="big num bad">376 of 898</div>
+      <p>images checked have no written description. Screen readers used by blind shoppers skip them, and image search can't tell what they show.</p>
+    </div>
+  </div>
+  <p>The gaps show up in the same spots on every page, mostly the small images in the menu. That points to the site's theme rather than hundreds of individual images. Other accessibility gaps flagged in testing: text that's hard to read against its background, some links and buttons with no name, and tap targets too small on phones.</p>
+</section>
+
+<!-- SMALLER -->
+<section class="problem" aria-labelledby="p4">
+  <span class="sev warn">Minor</span>
+  <h2 id="p4">Wording that search engines cut off or ignore</h2>
+  <p>None of these stop search engines from finding pages. They make the site's search listings less appealing to click.</p>
+  <div class="serps" role="img" aria-label="Illustration of the homepage's search listing now, with the title cut off before the brand name, next to an example with a shorter title">
+    <div class="serp"><span class="tagline">Now</span><span class="site">tasc Performance<small>https://www.tascperformance.com</small></span><span class="t cut">Activewear & Athletic Clothing: Comfortable Apparel Made Better – tasc Performance</span></div>
+    <div class="serp"><span class="tagline">Example: a shorter title</span><span class="site">tasc Performance<small>https://www.tascperformance.com</small></span><span class="t">Bamboo Activewear &amp; Athletic Clothing | tasc Performance</span></div>
+  </div>
+  <p style="font-size:.9rem;color:var(--muted)">Illustration, not a screenshot. Google blocked automated searches, so this is rebuilt from the homepage's real title. The exact cut-off point depends on screen size.</p>
+  <div class="fixes">
+    <div class="fix"><strong>Homepage title is too long</strong><span>82 characters. Search results show about 60, so "tasc Performance" gets cut off the end of your own listing.</span></div>
+    <div class="fix"><strong>Product descriptions in search results are twice too long</strong><span>Many run to 320 characters. Search results show about 160, so half is lost. The template pulls in the full product description rather than a short summary.</span></div>
+    <div class="fix"><strong>Blog homepage has no description</strong><span>The page that leads to all 290 posts gives search engines nothing to show under its link.</span></div>
+    <div class="fix"><strong>Homepage headline is just the brand name</strong><span>The main headline is the strongest signal on a page. It currently says only "tasc Performance", not a phrase shoppers search for.</span></div>
+    <div class="fix"><strong>Two pages with headline mistakes</strong><span>The Ambassadors page has no main headline. "The Sculptive Sweat Series" blog post has two.</span></div>
+    <div class="fix"><strong>Social share images use an old web address format</strong><span>They start with http instead of https, so some social apps won't show the image when a page is shared.</span></div>
+  </div>
+</section>
+
+<!-- WORKING -->
+<section class="problem" aria-labelledby="p5">
+  <span class="sev good">Working well</span>
+  <h2 id="p5">What's already in good shape</h2>
+  <p>A lot of the setup is better than most online stores.</p>
+  <ul class="working">
+    <li>Search engines can find and read every page they should, and are kept out of cart and checkout pages.</li>
+    <li>All versions of the web address lead cleanly to one main address.</li>
+    <li>The site map lists all 1,009 pages, neatly organized.</li>
+    <li>Broken links show a proper "page not found," which many Shopify stores get wrong.</li>
+    <li>Company and store details (New Orleans, Birmingham, Dallas, Houston) are set up for search engines in full, with addresses and hours.</li>
+    <li>Collection page titles and descriptions are well written, and the strongest on the site.</li>
+    <li>Images below the fold wait to load until the shopper scrolls to them.</li>
+    <li>Basic security settings are in place.</li>
+  </ul>
+</section>
+
+<section class="problem limits" aria-labelledby="p7">
+  <span class="label">About this check</span>
+  <h2 id="p7">What this report does and doesn't cover</h2>
+  <p>Everything here was measured on the live site on 23 September 2026. Sources: Google's Lighthouse lab test, Google's real-shopper speed data (PageSpeed Insights and CrUX Vis), and a page-by-page scan of 36 pages across products, collections, blog posts and other pages. The page-by-page fact sheet check covered 19 product pages, 3 blog posts, 2 collections, the homepage and 7 other pages.</p>
+  <ul class="plain">
+    <li>Real-shopper speed data covers the whole site and the homepage. Individual product and collection pages weren't checked on their own.</li>
+    <li>We didn't have access to Google Search Console or analytics, so this doesn't cover rankings, traffic or which searches bring people in.</li>
+    <li>AI visibility covers what AI tools can reach and read, plus 5 roundup articles. It doesn't measure what AI assistants actually say about tasc.</li>
+    <li>Competitors were compared on speed only. Their search listings, links from other websites and keyword opportunities weren't reviewed.</li>
+  </ul>
+  <p><strong>Not covered yet:</strong> rankings, traffic and sales impact would need Google Search Console and analytics access. A scan of all 1,009 pages would confirm how widely the template problems reach.</p>
+</section>
+
+<footer>tasc Performance · Website status report · As of 23 September 2026</footer>
+</div>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.sidenav a'));
+  var map={};links.forEach(function(a){var h=document.getElementById(a.getAttribute('href').slice(1));if(h){map[a.getAttribute('href').slice(1)]=a;}});
+  var ids=Object.keys(map);
+  function update(){var cur=ids[0];ids.forEach(function(id){var el=document.getElementById(id);if(el.getBoundingClientRect().top<140)cur=id;});
+    links.forEach(function(a){a.setAttribute('aria-current',map[cur]===a?'true':'false')});}
+  window.addEventListener('scroll',update,{passive:true});update();
+})();
+</script>
