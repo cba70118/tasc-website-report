@@ -258,11 +258,13 @@ table.sum a{color:var(--accent)}
   <a href="#overview">Overview</a>
   <a href="#dev">For developers</a>
   <a href="#d1">D1 Preferred source button</a>
-  <a href="#d2">D2 Image descriptions</a>
+  <a href="#d2">D2 Image descriptions (theme)</a>
   <a href="#d3">D3 Search descriptions</a>
+  <a href="#d4">D4 Header logo size</a>
   <a href="#content">For content and writers</a>
   <a href="#c1">C1 Homepage listing</a>
   <a href="#c2">C2 Free-shipping wording</a>
+  <a href="#c3">C3 Image descriptions</a>
   <a href="index.html">Status report →</a>
 </nav>
 
@@ -280,10 +282,12 @@ table.sum a{color:var(--accent)}
       <thead><tr><th>#</th><th>Recommendation</th><th>Who</th><th>Time</th><th>Status</th></tr></thead>
       <tbody>
         <tr><td><a href="#d1">D1</a></td><td>Add Google's "preferred source" button to blog posts</td><td>Developer</td><td>About 1 hour</td><td><span class="pill p-warn">Proposed</span></td></tr>
-        <tr><td><a href="#d2">D2</a></td><td>Add descriptions to the images that appear on every page</td><td>Developer</td><td>About 45 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#d2">D2</a></td><td>Make the theme output image descriptions</td><td>Developer</td><td>About 1–1.5 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#d3">D3</a></td><td>Stop product descriptions being cut off in search results</td><td>Developer</td><td>About 15 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#d4">D4</a></td><td>Give the header logo a size, so the page stops jumping</td><td>Developer</td><td>About 10 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#c1">C1</a></td><td>Rewrite the homepage title and description</td><td>Content</td><td>About 15 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#c2">C2</a></td><td>Update the free-shipping amount in collection descriptions</td><td>Content</td><td>About 10 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#c3">C3</a></td><td>Write descriptions for 130 images (<a href="tasc-images-missing-alt-text.csv">image list</a>)</td><td>Content</td><td>About 3 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -315,32 +319,31 @@ table.sum a{color:var(--accent)}
 </section>
 
 <section class="rec" aria-labelledby="d2">
-  <div class="rec-head"><span class="rec-id">D2</span><h3 id="d2">Add descriptions to the images that appear on every page</h3></div>
-  <div class="facts"><span><b>Time:</b> about 45 min</span><span><b>Where:</b> mega menu, size guide, footer</span><span><b>Affects:</b> every page</span></div>
-  <p>57% of images checked have no written description. About 16 of them repeat on every page, from four shared places. Fixing the three that live in the theme should bring the share down to roughly 12%.</p>
+  <div class="rec-head"><span class="rec-id">D2</span><h3 id="d2">Make the theme output image descriptions</h3></div>
+  <div class="facts"><span><b>Time:</b> about 1–1.5 hours</span><span><b>Where:</b> two shared image snippets, mega menu, size guide, hero video</span><span><b>Affects:</b> every page</span></div>
+  <p>Across all 995 pages, 16,073 of 29,923 images (54%) have no written description in the page source. They come from 145 unique images, and almost all of them pass through two shared theme snippets that never print a description at all. Fixing those snippets lets the content team add descriptions in the Shopify admin (<a href="#c3" style="color:var(--accent)">C3</a>) without touching code.</p>
+  <div class="callout"><p><strong>Worth knowing:</strong> the AudioEye accessibility tool patches most of these after the page loads. Mostly it marks them as decorative, and for a few it guesses a label (it labels the footer logo "TASC Logo"). That's why Google's Lighthouse accessibility check passes even though the descriptions are missing. With AudioEye blocked, 18 of the 42 images on a product page have no description. Fixing the theme removes the dependence on that patch.</p></div>
   <div class="tablewrap">
     <table>
       <thead><tr><th>Where</th><th>Images</th><th>Fix</th></tr></thead>
       <tbody>
-        <tr><td>Mega-menu carousel, tiles using a custom image</td><td>5</td><td>Add description and size</td></tr>
-        <tr><td>Size guide pop-up (fit images)</td><td>7</td><td>Add description</td></tr>
-        <tr><td>Footer logo (<code>White_Logo.png</code>)</td><td>1</td><td>Add description and size</td></tr>
-        <tr><td>Rewards/discount widget (hidden)</td><td>3</td><td>App content; raise with the vendor</td></tr>
+        <tr><td>Snippet that renders <code>lazypicture</code> (collection banners, hero banners, FAQ images, footer logo)</td><td>77</td><td>Print the file's description</td></tr>
+        <tr><td>Snippet that renders <code>responsive-image-wrapper</code> (feature blocks, page banners, infographics, icons)</td><td>41</td><td>Print the file's description</td></tr>
+        <tr><td>Hero video posters</td><td>8</td><td>Print the video's description</td></tr>
+        <tr><td>Size guide pop-up (fit images)</td><td>7</td><td>Hard-code descriptions</td></tr>
+        <tr><td>Mega-menu tiles using a custom image</td><td>5</td><td>Mark decorative</td></tr>
+        <tr><td>App widget images</td><td>2</td><td>Raise with the app vendor</td></tr>
       </tbody>
     </table>
   </div>
   <ol class="steps">
-    <li><strong>Mega menu.</strong> Tiles that show a collection's own image already work. The five that use a custom image uploaded to the menu block have no description or size. Find the branch that renders the block's image and switch it to <code>image_tag</code>, which adds the size automatically (use the snippet's real setting name in place of <code>block.settings.image</code>):
-<pre><code>{{ block.settings.image
-   | image_url: width: 360
-   | image_tag:
-       alt: link.title,
-       loading: 'lazy',
-       sizes: '(max-width: 1600px) 285px, 325px',
-       class: 'u-responsiveImage' }}</code></pre></li>
-    <li><strong>Size guide</strong> (<code>SizeGuide-image</code>). Add an <code>alt</code> naming the fit: Men's fitted, Men's semi-fit, Men's relaxed, Women's next-to-skin, Women's fitted, Women's semi-fit, Women's relaxed.</li>
-    <li><strong>Footer logo.</strong> Add <code>alt="tasc Performance"</code> plus its width and height.</li>
-    <li><strong>Check it:</strong> view the source of any product page, search for <code>&lt;img</code>, and confirm every one has <code>alt=</code> apart from the three app images.</li>
+    <li><strong>The two shared snippets.</strong> Find the snippets that output the <code>lazypicture</code> and <code>responsive-image-wrapper</code> markup. In each, add the image's own description to the <code>&lt;img&gt;</code> tag (use whatever the snippet calls its image variable):
+<pre><code>alt="{{ image.alt | escape }}"</code></pre>
+    Shopify fills <code>image.alt</code> from the description saved on the file under <strong>Content → Files</strong>. Until content fills one in it prints <code>alt=""</code>, which is still valid.</li>
+    <li><strong>Hero video posters.</strong> Where the hero section renders the video's preview image, add <code>alt="{{ video.alt | escape }}"</code>.</li>
+    <li><strong>Mega menu.</strong> The five tiles that use a custom uploaded image sit right beside their link text, so a description would just repeat it. Mark them decorative: add <code>alt=""</code> in the custom-image branch of the menu snippet.</li>
+    <li><strong>Size guide.</strong> These images are fixed in the theme, so hard-code the descriptions from the <a href="tasc-images-missing-alt-text.csv" style="color:var(--accent)">image list</a> (rows 7–13), e.g. <code>alt="Men's semi-fit shown on a model in a navy quarter-zip"</code>.</li>
+    <li><strong>Check it:</strong> view the page source of any product page (Ctrl+U in Chrome shows it before AudioEye runs), search for <code>&lt;img</code>, and confirm every tag has <code>alt=</code>.</li>
   </ol>
 </section>
 
@@ -357,6 +360,22 @@ table.sum a{color:var(--accent)}
     <li><strong>Check it:</strong> view the source of the NOLA Long Sleeve page. The description should be 155 characters or fewer and end in "…".</li>
   </ol>
   <div class="callout"><p><strong>Worth knowing:</strong> this is a tidy safety net, but it can still cut mid-sentence. The better long-term fix is a written description per product, which content can do in bulk through the product CSV export (the "SEO Description" column).</p></div>
+</section>
+
+<section class="rec" aria-labelledby="d4">
+  <div class="rec-head"><span class="rec-id">D4</span><h3 id="d4">Give the header logo a size, so the page stops jumping</h3></div>
+  <div class="facts"><span><b>Time:</b> about 10 min</span><span><b>Where:</b> header snippet</span><span><b>Affects:</b> every page</span></div>
+  <p>The homepage fails one of Google's real-shopper speed checks: it jumps around while loading (0.29 against a limit of 0.10, in Google's September data). Lighthouse traced the biggest jump, on both the homepage and product pages, to the header logo. The theme prints it with empty size fields, <code>width="" height=""</code>, so the browser can't save room for it. When the logo arrives, the header grows and pushes the whole page down.</p>
+  <ol class="steps">
+    <li><strong>Find</strong> the logo in the header snippet. It currently outputs:
+<pre><code>&lt;img src="//www.tascperformance.com/cdn/shop/files/Mobile-8_1.png" alt="tasc Performance" width="" height=""&gt;</code></pre></li>
+    <li><strong>Replace it</strong> with Shopify's <code>image_tag</code>, which prints the real width and height. Use the header's actual logo setting name:
+<pre><code>{{ section.settings.logo
+   | image_url: width: 300
+   | image_tag: alt: shop.name, class: 'header-logo-image' }}</code></pre>
+    Or, if the logo is hard-coded, fill in the numbers: <code>width="150" height="48"</code>. That's the size it displays at on phones, and CSS can still scale it.</li>
+    <li><strong>Check it:</strong> run the homepage through PageSpeed Insights. The "Avoid large layout shifts" item should no longer point at <code>header-logo</code>. Google's real-shopper figure updates over the following 28 days.</li>
+  </ol>
 </section>
 
 <!-- ================= FOR CONTENT AND WRITERS ================= -->
@@ -387,6 +406,19 @@ table.sum a{color:var(--accent)}
   <ol class="steps">
     <li>Open these five collections and edit the <strong>Search engine listing</strong> description: Women's Yoga, Women's Short Sleeve, Women's Sports Bras, Women's Running and Men's Joggers.</li>
     <li>Change "$100" to "$150", or remove the shipping line so it can't go stale again.</li>
+  </ol>
+</section>
+
+<section class="rec" aria-labelledby="c3">
+  <div class="rec-head"><span class="rec-id">C3</span><h3 id="c3">Write descriptions for 130 images</h3></div>
+  <div class="facts"><span><b>Time:</b> about 3 hours</span><span><b>Where:</b> Content → Files, and product media for 4 videos</span><span><b>Needs first:</b> <a href="#d2" style="color:var(--accent)">D2</a></span></div>
+  <p>The <a href="tasc-images-missing-alt-text.csv" style="color:var(--accent)"><strong>image list</strong></a> (CSV) has every image on the site that's missing a description: 145 in total, found by scanning all 995 pages. Each row has a suggested description written after looking at the picture, how many pages the image appears on, and where to enter the text. Many banners come in desktop and mobile pairs, so the 130 images that need text need only 91 different descriptions. The other 15 should be marked decorative or handed to a developer or app vendor.</p>
+  <ol class="steps">
+    <li><strong>For most images:</strong> Content → Files, search the file name from the list, open it and paste the description into <strong>Alt text</strong>. It shows on the site once D2 is live.</li>
+    <li><strong>For the four product videos</strong> (rows 47, 67, 73, 74): open the product, click the video in Media, and choose <strong>Add alt text</strong>.</li>
+    <li><strong>Graphics with words in them</strong> ("It's all in the details", the Motion Short feature graphic, the review-count banners, the fit comparisons) need a description that repeats the words, because a screen reader can't read text inside an image.</li>
+    <li><strong>Confirm three names</strong> taken from file names: Alex Smalley, Eric Cole and Trey Winstead.</li>
+    <li><strong>Delete one empty image</strong> in the blog post "Essential features to look for in men's running outfits" (row 26). It has no picture in it.</li>
   </ol>
 </section>
 
