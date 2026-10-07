@@ -242,6 +242,7 @@ section[id],section[aria-labelledby]{scroll-margin-top:24px}
   <a href="#p2">Product &amp; blog details</a>
   <a href="#psd">Page by page</a>
   <a href="#pai">AI visibility</a>
+  <a href="#pps">Preferred source</a>
   <a href="#p3">Images</a>
   <a href="#p4">Search listings</a>
   <a href="#p5">Working well</a>
@@ -458,6 +459,25 @@ section[id],section[aria-labelledby]{scroll-margin-top:24px}
   </div>
   <p>tasc does have a long trail of individual reviews from outdoor, golf and fitness sites, including <a href="https://gearjunkie.com/apparel/tasc-bamboo-apparel-shirts-review" target="_blank" rel="noopener" style="color:var(--accent)">GearJunkie</a> and <a href="https://practical-golf.com/tasc-performance-review" target="_blank" rel="noopener" style="color:var(--accent)">Practical Golf</a>. Many are several years old, and AI tools tend to favor recent sources.</p>
   <div class="callout"><p><strong>Worth knowing:</strong> this section describes what AI tools can see, not what they actually say. Checking how ChatGPT, Google's AI answers and others describe tasc takes repeated test questions over several weeks, because their answers vary from one day to the next.</p></div>
+</section>
+
+<!-- RECOMMENDATION: PREFERRED SOURCES -->
+<section class="problem" aria-labelledby="pps">
+  <span class="label">Recommendation</span>
+  <h2 id="pps">Add Google's "preferred source" button to blog posts</h2>
+  <p>Google now lets readers pick the sites they want to see more of. When someone adds tasc as a preferred source, tasc's articles are more likely to appear for them in Google's Top Stories, marked with a "preferred" badge, and in Google's AI answers (AI Overviews and AI Mode). Since August 2026, Google offers a ready-made button so readers can do this in one tap without leaving the page.</p>
+  <div class="twocol">
+    <div class="box">
+      <h3>What it takes</h3>
+      <p>Two small additions to the blog post template: Google's button script, and the button itself at the end of each post, just above "Back to tasc Life". About an hour of developer time, including testing.</p>
+    </div>
+    <div class="box">
+      <h3>Why blog posts only</h3>
+      <p>The button's code is about 40 KB to download. Pages are already heavy (13.5 MB on the homepage), so it should load only on blog posts, where readers are most likely to want more from tasc, rather than on every page.</p>
+    </div>
+  </div>
+  <div class="callout"><p><strong>Check first:</strong> the button only helps if Google lists tascperformance.com in its source preferences tool, which happens for sites that have appeared in Top Stories. Searching for tascperformance.com at google.com/preferences/source confirms this in a few seconds. After that, the benefit grows only as readers choose to add tasc, so it adds to fixing the blog fact sheets rather than replacing it.</p></div>
+  <p style="font-size:.9rem;color:var(--muted)">Source: <a href="https://developers.google.com/search/docs/appearance/preferred-sources" target="_blank" rel="noopener" style="color:var(--accent)">Google Search Central, Preferred Sources guide</a>.</p>
 </section>
 
 <!-- PROBLEM 3 -->
