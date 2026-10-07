@@ -1,0 +1,404 @@
+<title>tasc Recommendations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#F4F5F1; --ink:#323E48; --muted:#5E6870; --line:#DDDFDA;
+  --accent:#556221; --accent-soft:#EEEFE9; --pop:#B5BD00;
+  --band:#323E48; --on-band:#FFFFFF; --band-muted:#ADB2B6;
+  --bad:#C8321F; --bad-soft:#FBE7E3; --warn:#B26B00; --warn-soft:#FBEFD9; --good:#556221; --good-soft:#E2E6CE;
+  --track:#EBECED; --on-bad:#FFFFFF;
+  --display:"Poppins", "Avenir Next", Avenir, Helvetica, Arial, sans-serif;
+  --body:Avenir, "Avenir Next", "Nunito Sans", Helvetica, Arial, sans-serif;
+}
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;padding:0 20px;}
+.wrap{max-width:880px;margin:0 auto;padding-block:48px 72px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.9rem,4.6vw,2.7rem);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+h2{font-size:1.6rem;font-weight:700}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0;max-width:66ch}
+.label{font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+section{display:flex;flex-direction:column;gap:20px}
+.num{font-variant-numeric:tabular-nums}
+
+/* header */
+header{display:flex;flex-direction:column;gap:16px;background:var(--band);color:var(--on-band);border-radius:8px;padding:36px clamp(20px,4vw,44px) 34px;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--pop)}
+header .label{color:var(--pop)}
+header .meta{color:var(--band-muted)}
+.brandbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:.01em}
+.brandbar span{font-family:var(--body);font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;background:var(--accent);color:#fff;padding:5px 12px;border-radius:40px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;color:var(--muted);font-size:.95rem}
+.lede{font-size:1.2rem;line-height:1.55}
+
+/* scores */
+.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.score{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:6px}
+.score .v{font-family:var(--display);font-size:2.4rem;font-weight:700;line-height:1}
+.score .v small{font-size:1rem;color:var(--muted);font-weight:500}
+.score .n{font-weight:700}
+.score .d{font-size:.9rem;color:var(--muted);line-height:1.4}
+.meter{height:6px;background:var(--track);border-radius:3px;overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;border-radius:3px}
+.bad{color:var(--bad)} .warn{color:var(--warn)} .good{color:var(--good)}
+.bg-bad{background:var(--bad)} .bg-warn{background:var(--warn)} .bg-good{background:var(--good)}
+@media (max-width:720px){.scores{grid-template-columns:repeat(2,1fr)}}
+
+/* top 3 */
+.top3{display:grid;gap:12px}
+.pick{display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+.pick .rank{font-family:var(--display);font-size:1.1rem;font-weight:700;color:#fff;background:var(--accent);width:38px;height:38px;border-radius:50%;display:grid;place-items:center}
+.pick p{color:var(--muted);font-size:.98rem}
+.pick h3{margin-bottom:4px}
+.tag{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:40px;white-space:nowrap}
+.t-low{background:var(--good-soft);color:var(--good)}
+.t-med{background:var(--warn-soft);color:var(--warn)}
+.t-high{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:560px){.pick{grid-template-columns:32px 1fr}.pick .tag{grid-column:2;justify-self:start}}
+
+/* problem blocks */
+.problem{border-top:1px solid var(--line);padding-top:36px}
+.sev{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.sev::before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
+.callout{background:var(--accent-soft);border-radius:8px;padding:16px 20px;border-left:4px solid var(--pop)}
+.callout p{max-width:none}
+.callout strong{color:var(--accent)}
+
+/* bar chart */
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:14px}
+.chart-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;align-items:baseline}
+.chart-head .label{color:var(--ink)}
+.chart-head span:last-child{font-size:.88rem;color:var(--muted)}
+.row{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:6px 16px;align-items:center}
+.row .what{font-size:.95rem;line-height:1.3}
+.row .what small{display:block;color:var(--muted);font-size:.82rem}
+.bar{position:relative;height:26px;background:var(--track);border-radius:4px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--bad);border-radius:4px}
+.bar b{position:absolute;top:50%;transform:translateY(-50%);font-size:.88rem;font-weight:700;padding-left:8px;white-space:nowrap}
+.bar b.on-bad{color:var(--on-bad)}
+.bar .limit{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.axis{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:16px;font-size:.8rem;color:var(--muted)}
+.axis div{position:relative;height:16px}
+.axis div span{position:absolute;transform:translateX(-50%)}
+.axis div span:first-child{transform:none}
+.axis div span:last-child{transform:translateX(-100%)}
+@media (max-width:560px){.row,.axis{grid-template-columns:1fr}.axis>span{display:none}}
+
+/* weight compare */
+.weight{display:grid;gap:10px}
+.weight .w{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;font-size:.95rem}
+.weight .bar{height:22px}
+.weight .ok i{background:var(--good)}
+
+ul.plain{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;max-width:66ch}
+ul.plain li::marker{color:var(--accent)}
+
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.box p{font-size:.97rem;color:var(--muted)}
+.big{font-family:var(--display);font-size:2rem;font-weight:700;line-height:1}
+@media (max-width:640px){.twocol{grid-template-columns:1fr}}
+
+/* images stat */
+.imgstat{display:flex;flex-wrap:wrap;gap:20px 36px;align-items:center}
+.dots{display:grid;grid-template-columns:repeat(20,12px);gap:4px}
+.dots i{width:12px;height:12px;border-radius:2px;background:var(--track)}
+.dots i.m{background:var(--bad)}
+
+/* smaller fixes */
+.fixes{display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.fix{display:grid;grid-template-columns:1fr 1.3fr;gap:6px 20px;padding:14px 20px;border-top:1px solid var(--line)}
+.fix:first-child{border-top:0}
+.fix strong{font-weight:600}
+.fix span{color:var(--muted);font-size:.95rem}
+@media (max-width:600px){.fix{grid-template-columns:1fr}}
+
+/* working */
+.working{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 24px}
+.working li{list-style:none;display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:.98rem}
+.working li::before{content:"";width:12px;height:7px;border-left:2.5px solid var(--good);border-bottom:2.5px solid var(--good);transform:rotate(-45deg);margin-top:7px}
+.working{padding:0;margin:0}
+@media (max-width:640px){.working{grid-template-columns:1fr}}
+
+/* plan table */
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.95rem}
+th,td{text-align:left;padding:12px 16px;border-top:1px solid var(--line);vertical-align:top}
+th{border-top:0;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr.phase td{background:var(--accent-soft);font-weight:700;font-size:.85rem;letter-spacing:.04em;color:var(--accent)}
+td:last-child{white-space:nowrap}
+
+/* real shopper cards */
+.rs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rs .box{gap:4px}
+.rs-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.m-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:.95rem}
+.m-row small{display:block;color:var(--muted);font-size:.8rem}
+.m-row .val{font-weight:700;font-variant-numeric:tabular-nums}
+.pill{font-size:.75rem;font-weight:700;padding:4px 11px;border-radius:40px;white-space:nowrap;text-align:center}
+.p-good{background:var(--good-soft);color:var(--good)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:640px){.rs{grid-template-columns:1fr}}
+/* competitors */
+table.comp{min-width:520px}
+table.glance td:first-child{font-weight:700;width:30%}
+table.glance td:nth-child(2){color:var(--muted)}
+table.comp td{vertical-align:middle}
+table.comp tr.us td{background:var(--accent-soft);font-weight:700}
+/* search listing illustration */
+.serps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.serp{background:#FFFFFF;border:1px solid #DADCE0;border-radius:8px;padding:16px 18px;font-family:Arial,Helvetica,sans-serif;color:#202124;display:flex;flex-direction:column;gap:4px;min-width:0}
+.serp .tagline{font-family:var(--body);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5E6870;margin-bottom:6px}
+.serp .site{font-size:13px;color:#202124}
+.serp .site small{display:block;color:#4D5156;font-size:12px}
+.serp .t{font-size:19px;line-height:1.3;color:#1A0DAB}
+.serp .t.cut{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){.serps{grid-template-columns:1fr}}
+/* structured data grid */
+table.sd td:first-child{font-weight:700;white-space:normal}
+table.sd td:first-child small{display:block;font-weight:400;color:var(--muted);font-size:.82rem}
+table.sd td:nth-child(3){white-space:nowrap}
+table.sd td:last-child{white-space:normal;color:var(--muted)}
+.gaps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gap{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.gap .have{font-size:.8rem;font-weight:700;color:var(--bad)}
+.gap p{font-size:.95rem;color:var(--muted)}
+@media (max-width:640px){.gaps{grid-template-columns:1fr}}
+.lists{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.lst{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem;line-height:1.35}
+.lst a{color:var(--ink);text-decoration:none;font-weight:600}
+.lst a:hover{text-decoration:underline}
+@media (max-width:760px){.lists{grid-template-columns:1fr 1fr}}
+.limits p,.limits li{color:var(--muted);font-size:.95rem}
+footer{background:var(--band);color:var(--band-muted);font-size:.85rem;padding:18px 22px;border-radius:8px}
+
+/* ===== B: Editorial ===== */
+body{font-size:17.5px}
+body .wrap{max-width:800px;gap:88px}
+body header{background:transparent;color:var(--ink);padding:24px 0 36px;border-radius:0}
+body header::after{height:3px;background:var(--ink)}
+body header .meta{color:var(--muted)}
+body .brandbar{color:var(--ink)}
+body h1{font-size:clamp(2.4rem,6vw,3.8rem);line-height:1.05;letter-spacing:-.02em}
+body .lede{font-size:1.3rem;line-height:1.5}
+body h2{font-size:clamp(1.7rem,4vw,2.3rem);letter-spacing:-.01em}
+body .problem{border-top:0;padding-top:0}
+body :is(.score,.box,.gap,.chart,.tablewrap,.fixes,.lst,.callout){background:transparent;border:0;border-top:2px solid var(--ink);border-radius:0;padding-left:0;padding-right:0}
+body .callout{border-left:0;border-top-color:var(--pop);border-top-width:4px}
+body .serp{border-radius:0}
+body tr.phase td, body table.comp tr.us td{background:transparent}
+body th{padding-left:0}
+body td{padding-left:0}
+body .score .v{font-size:3.2rem}
+body .sev,body .label{font-size:.85rem}
+body footer{background:transparent;border-top:2px solid var(--ink);border-radius:0;padding-inline:0;color:var(--muted)}
+
+/* ===== D: Olive ===== */
+body{--bg:#FFFFFF;--surface:#FFFFFF;--line:#D8DBC9;--band:#556221;--band-muted:#E2E6CE;--accent-soft:#E2E6CE;--track:#E4E6DA}
+body{--bg:#FFFFFF;--surface:#FFFFFF;--line:#D8DBC9;--band:#556221;--band-muted:#E2E6CE;--accent-soft:#E2E6CE;--track:#E4E6DA}
+body header .brandbar span{background:var(--pop);color:#232B32}
+body header::after{background:#323E48}
+body :is(.score,.box,.gap,.chart,.tablewrap,.fixes,.lst,.pick,header,footer,.serp){border-radius:16px}
+body .problem{border-top:0;padding-top:8px}
+body h2{color:var(--accent)}
+body .callout{border-left:0;border-radius:16px;background:var(--surface)}
+
+/* ===== Editorial + Olive ===== */
+body header{background:var(--band);color:var(--on-band);padding:44px clamp(22px,5vw,56px) 46px;border-radius:16px}
+body header::after{height:6px;background:var(--pop)}
+body header .meta{color:var(--band-muted)}
+body .brandbar{color:var(--on-band)}
+body :is(.score,.box,.gap,.chart,.tablewrap,.fixes,.lst){border-radius:0;border-top-color:var(--accent)}
+body footer{border-top-color:var(--accent);border-radius:0}
+h2{color:var(--accent)}
+
+/* ===== side menu ===== */
+.sidenav{display:none}
+@media (min-width:1000px){
+  body .wrap{max-width:1100px;display:grid;grid-template-columns:190px minmax(0,1fr);column-gap:56px;align-content:start}
+  .wrap>*{grid-column:2}
+  .sidenav{display:flex;flex-direction:column;gap:0;grid-column:1;grid-row:1 / span 30;position:sticky;top:calc(env(safe-area-inset-top,0px) + 32px);align-self:start;padding-top:8px}
+}
+.sidenav .nav-title{font-family:var(--display);font-weight:700;font-size:1rem;color:var(--accent);padding:0 0 10px 14px}
+.sidenav a{color:var(--muted);text-decoration:none;font-size:.92rem;font-weight:600;padding:6px 0 6px 14px;border-left:2px solid var(--line);line-height:1.3}
+.sidenav a:hover{color:var(--ink);border-left-color:var(--accent)}
+.sidenav a[aria-current="true"]{color:var(--accent);border-left:3px solid var(--pop);padding-left:13px}
+.sidenav a:focus-visible{outline:2px solid var(--pop);outline-offset:2px}
+section[id],section[aria-labelledby]{scroll-margin-top:24px}
+</style>
+
+<style>
+/* recommendations page additions */
+pre{margin:0;background:#232B32;color:#EEF0EA;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.84rem;line-height:1.55;max-width:100%}
+pre code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:none;padding:0;color:inherit}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:4px}
+.rec{display:flex;flex-direction:column;gap:16px;border-top:2px solid var(--accent);padding-top:22px}
+.rec-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.rec-id{font-family:var(--display);font-weight:700;font-size:.85rem;color:#fff;background:var(--accent);padding:3px 10px;border-radius:40px}
+.facts{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:.92rem;color:var(--muted)}
+.facts b{color:var(--ink);font-weight:700}
+ol.steps{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:12px;max-width:72ch}
+ol.steps li::marker{color:var(--accent);font-weight:700}
+.audience{display:flex;flex-direction:column;gap:6px}
+.copy{background:var(--surface);border-left:4px solid var(--pop);padding:12px 16px;font-size:1rem}
+.copy small{display:block;color:var(--muted);font-size:.82rem;margin-top:4px}
+table.sum td:first-child{font-weight:700;white-space:nowrap}
+table.sum a{color:var(--accent)}
+.backlink{color:var(--band-muted);text-decoration:underline}
+</style>
+
+<div class="wrap">
+<nav class="sidenav" aria-label="Recommendation sections">
+  <span class="nav-title">tasc recommendations</span>
+  <a href="#overview">Overview</a>
+  <a href="#dev">For developers</a>
+  <a href="#d1">D1 Preferred source button</a>
+  <a href="#d2">D2 Image descriptions</a>
+  <a href="#d3">D3 Search descriptions</a>
+  <a href="#content">For content and writers</a>
+  <a href="#c1">C1 Homepage listing</a>
+  <a href="#c2">C2 Free-shipping wording</a>
+  <a href="index.html">Status report →</a>
+</nav>
+
+<header>
+  <div class="brandbar">tasc Performance<span>Recommendations</span></div>
+  <h1>What to change, and who does it</h1>
+  <div class="meta"><span>tascperformance.com</span><span>As of 7 October 2026</span><span>Living document</span></div>
+  <p class="lede">Practical changes drawn from the <a class="backlink" href="index.html">website status report</a>, split by who carries them out. Each one is small enough to finish in an afternoon or less. New recommendations will be added as they come up.</p>
+</header>
+
+<section aria-labelledby="overview">
+  <h2 id="overview">Overview</h2>
+  <div class="tablewrap">
+    <table class="sum">
+      <thead><tr><th>#</th><th>Recommendation</th><th>Who</th><th>Time</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="#d1">D1</a></td><td>Add Google's "preferred source" button to blog posts</td><td>Developer</td><td>About 1 hour</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#d2">D2</a></td><td>Add descriptions to the images that appear on every page</td><td>Developer</td><td>About 45 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#d3">D3</a></td><td>Stop product descriptions being cut off in search results</td><td>Developer</td><td>About 15 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#c1">C1</a></td><td>Rewrite the homepage title and description</td><td>Content</td><td>About 15 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#c2">C2</a></td><td>Update the free-shipping amount in collection descriptions</td><td>Content</td><td>About 10 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= FOR DEVELOPERS ================= -->
+<section class="problem audience" aria-labelledby="dev">
+  <span class="label">Section 1</span>
+  <h2 id="dev">For developers</h2>
+  <p>Changes to the Shopify theme. Each one lists the files to look for, the code, and how to check it worked.</p>
+</section>
+
+<section class="rec" aria-labelledby="d1">
+  <div class="rec-head"><span class="rec-id">D1</span><h3 id="d1">Add Google's "preferred source" button to blog posts</h3></div>
+  <div class="facts"><span><b>Time:</b> about 1 hour with testing</span><span><b>Where:</b> blog post template, theme head</span><span><b>Affects:</b> 295 blog posts</span></div>
+  <p>Google lets readers pick the sites they want to see more of. When someone adds tasc as a preferred source, tasc's articles are more likely to appear for them in Google's Top Stories, marked with a "preferred" badge, and in AI Overviews and AI Mode. Since August 2026 Google offers a ready-made button so readers can do this in one tap without leaving the page.</p>
+  <div class="callout"><p><strong>Check first:</strong> the button only works for sites Google lists in its source preferences tool, which happens for sites that have appeared in Top Stories. Search for <code>tascperformance.com</code> at <a href="https://www.google.com/preferences/source" target="_blank" rel="noopener" style="color:var(--accent)">google.com/preferences/source</a>. If it appears, go ahead. If not, park this until it does.</p></div>
+  <ol class="steps">
+    <li><strong>Load Google's script on blog posts only.</strong> The script is about 40 KB to download, and pages are already heavy, so don't load it sitewide. In <code>theme.liquid</code>, inside <code>&lt;head&gt;</code>:
+<pre><code>{%- if template.name == 'article' -%}
+  &lt;script async src="https://news.google.com/swg/js/v1/publisher.js"&gt;&lt;/script&gt;
+{%- endif -%}</code></pre></li>
+    <li><strong>Place the button at the end of each post.</strong> In the article template, just above the existing <code>Article-buttonWrapper</code> ("Back to tasc Life"):
+<pre><code>&lt;div google-add-preferred-source-btn data-lang="en"&gt;&lt;/div&gt;</code></pre>
+    Add <code>data-theme="dark"</code> only if it sits on a dark background.</li>
+    <li><strong>Check it:</strong> open any blog post on a phone and a desktop. The Google-styled "Add to preferred sources" button should appear above "Back to tasc Life", and it shouldn't appear on product or collection pages.</li>
+  </ol>
+  <p style="font-size:.9rem;color:var(--muted)">Source: <a href="https://developers.google.com/search/docs/appearance/preferred-sources" target="_blank" rel="noopener" style="color:var(--accent)">Google Search Central, Preferred Sources guide</a>.</p>
+</section>
+
+<section class="rec" aria-labelledby="d2">
+  <div class="rec-head"><span class="rec-id">D2</span><h3 id="d2">Add descriptions to the images that appear on every page</h3></div>
+  <div class="facts"><span><b>Time:</b> about 45 min</span><span><b>Where:</b> mega menu, size guide, footer</span><span><b>Affects:</b> every page</span></div>
+  <p>57% of images checked have no written description. About 16 of them repeat on every page, from four shared places. Fixing the three that live in the theme should bring the share down to roughly 12%.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Where</th><th>Images</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Mega-menu carousel, tiles using a custom image</td><td>5</td><td>Add description and size</td></tr>
+        <tr><td>Size guide pop-up (fit images)</td><td>7</td><td>Add description</td></tr>
+        <tr><td>Footer logo (<code>White_Logo.png</code>)</td><td>1</td><td>Add description and size</td></tr>
+        <tr><td>Rewards/discount widget (hidden)</td><td>3</td><td>App content; raise with the vendor</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ol class="steps">
+    <li><strong>Mega menu.</strong> Tiles that show a collection's own image already work. The five that use a custom image uploaded to the menu block have no description or size. Find the branch that renders the block's image and switch it to <code>image_tag</code>, which adds the size automatically (use the snippet's real setting name in place of <code>block.settings.image</code>):
+<pre><code>{{ block.settings.image
+   | image_url: width: 360
+   | image_tag:
+       alt: link.title,
+       loading: 'lazy',
+       sizes: '(max-width: 1600px) 285px, 325px',
+       class: 'u-responsiveImage' }}</code></pre></li>
+    <li><strong>Size guide</strong> (<code>SizeGuide-image</code>). Add an <code>alt</code> naming the fit: Men's fitted, Men's semi-fit, Men's relaxed, Women's next-to-skin, Women's fitted, Women's semi-fit, Women's relaxed.</li>
+    <li><strong>Footer logo.</strong> Add <code>alt="tasc Performance"</code> plus its width and height.</li>
+    <li><strong>Check it:</strong> view the source of any product page, search for <code>&lt;img</code>, and confirm every one has <code>alt=</code> apart from the three app images.</li>
+  </ol>
+</section>
+
+<section class="rec" aria-labelledby="d3">
+  <div class="rec-head"><span class="rec-id">D3</span><h3 id="d3">Stop product descriptions being cut off in search results</h3></div>
+  <div class="facts"><span><b>Time:</b> about 15 min</span><span><b>Where:</b> <code>theme.liquid</code> and the social meta snippet</span><span><b>Affects:</b> products without their own SEO description</span></div>
+  <p>When a product has no SEO description, Shopify fills one in from the first 320 characters of the product description. Search results show about 155, so many listings end mid-word. For example, the NOLA Long Sleeve's ends with "…Explore ou". 11 of 20 products checked are affected.</p>
+  <ol class="steps">
+    <li><strong>Find</strong> the description tag in the theme head:
+<pre><code>&lt;meta name='description' content='{{ page_description | escape }}'&gt;</code></pre></li>
+    <li><strong>Replace it with:</strong>
+<pre><code>&lt;meta name='description' content='{{ page_description | strip_html | strip_newlines | truncate: 155 | escape }}'&gt;</code></pre></li>
+    <li><strong>Make the same change</strong> to the <code>og:description</code> tag in the social meta snippet. It carries the same 320-character text.</li>
+    <li><strong>Check it:</strong> view the source of the NOLA Long Sleeve page. The description should be 155 characters or fewer and end in "…".</li>
+  </ol>
+  <div class="callout"><p><strong>Worth knowing:</strong> this is a tidy safety net, but it can still cut mid-sentence. The better long-term fix is a written description per product, which content can do in bulk through the product CSV export (the "SEO Description" column).</p></div>
+</section>
+
+<!-- ================= FOR CONTENT AND WRITERS ================= -->
+<section class="problem audience" aria-labelledby="content">
+  <span class="label">Section 2</span>
+  <h2 id="content">For content and writers</h2>
+  <p>Changes made in the Shopify admin. No code needed.</p>
+</section>
+
+<section class="rec" aria-labelledby="c1">
+  <div class="rec-head"><span class="rec-id">C1</span><h3 id="c1">Rewrite the homepage title and description</h3></div>
+  <div class="facts"><span><b>Time:</b> about 15 min</span><span><b>Where:</b> Online Store → Preferences → Title and meta description</span></div>
+  <p>The homepage title is 82 characters. Search results show about 60, so "tasc Performance" is cut off the end of tasc's own listing. The description is fine on length but doesn't mention bamboo, which is what sets tasc apart.</p>
+  <h3>Title</h3>
+  <p>The theme adds " – tasc Performance" automatically, so leave the brand out and keep the field to 41 characters or fewer.</p>
+  <div class="copy">Bamboo Activewear &amp; Athletic Clothing<small>Recommended. Shows as "Bamboo Activewear &amp; Athletic Clothing – tasc Performance" (56 characters). Keeps the current keywords and matches the collection titles.</small></div>
+  <div class="copy">Activewear &amp; Athletic Clothing<small>Alternative. Shows as 49 characters.</small></div>
+  <h3>Description</h3>
+  <div class="copy">We make better t-shirts, pants, golf polos and yoga clothes from soft, bamboo-based fabric, so you can move better, feel better and live better.<small>Recommended (144 characters). Keeps the current voice, and nothing in it goes out of date.</small></div>
+  <div class="copy">Shop t-shirts, polos, pants and yoga clothes made with soft, bamboo-based fabric that wicks moisture and resists odor. Free shipping over $150.<small>Alternative (143 characters). Only use this if someone will update it when the shipping amount changes.</small></div>
+  <p>Google usually updates the listing within a few days to two weeks. Search Console → URL Inspection → Request indexing can speed it up.</p>
+</section>
+
+<section class="rec" aria-labelledby="c2">
+  <div class="rec-head"><span class="rec-id">C2</span><h3 id="c2">Update the free-shipping amount in collection descriptions</h3></div>
+  <div class="facts"><span><b>Time:</b> about 10 min</span><span><b>Where:</b> Products → Collections → each collection → Search engine listing</span></div>
+  <p>The site banner says "Free Shipping on Orders $150 or More!", but 5 of the 72 collection descriptions shown in search results still say "Free shipping over $100." Shoppers who click expecting $100 find a different offer.</p>
+  <ol class="steps">
+    <li>Open these five collections and edit the <strong>Search engine listing</strong> description: Women's Yoga, Women's Short Sleeve, Women's Sports Bras, Women's Running and Men's Joggers.</li>
+    <li>Change "$100" to "$150", or remove the shipping line so it can't go stale again.</li>
+  </ol>
+</section>
+
+<footer>tasc Performance · Recommendations · As of 7 October 2026 · <a class="backlink" href="index.html">Website status report</a></footer>
+</div>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.sidenav a[href^="#"]'));
+  var map={};links.forEach(function(a){var h=document.getElementById(a.getAttribute('href').slice(1));if(h){map[a.getAttribute('href').slice(1)]=a;}});
+  var ids=Object.keys(map);
+  function update(){var cur=ids[0];ids.forEach(function(id){var el=document.getElementById(id);if(el.getBoundingClientRect().top<140)cur=id;});
+    links.forEach(function(a){a.setAttribute('aria-current',map[cur]===a?'true':'false')});}
+  window.addEventListener('scroll',update,{passive:true});update();
+})();
+</script>
