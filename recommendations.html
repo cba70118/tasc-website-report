@@ -287,7 +287,7 @@ table.sum a{color:var(--accent)}
         <tr><td><a href="#d4">D4</a></td><td>Give the header logo a size, so the page stops jumping</td><td>Developer</td><td>About 10 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#c1">C1</a></td><td>Rewrite the homepage title and description</td><td>Content</td><td>About 15 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#c2">C2</a></td><td>Update the free-shipping amount in collection descriptions</td><td>Content</td><td>About 10 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
-        <tr><td><a href="#c3">C3</a></td><td>Write descriptions for 130 images (<a href="tasc-images-missing-alt-text.csv">image list</a>)</td><td>Content</td><td>About 3 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#c3">C3</a></td><td>Write descriptions for 131 images (<a href="tasc-images-missing-alt-text.csv">image list</a>)</td><td>Content</td><td>About 3 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -410,13 +410,14 @@ table.sum a{color:var(--accent)}
 </section>
 
 <section class="rec" aria-labelledby="c3">
-  <div class="rec-head"><span class="rec-id">C3</span><h3 id="c3">Write descriptions for 130 images</h3></div>
+  <div class="rec-head"><span class="rec-id">C3</span><h3 id="c3">Write descriptions for 131 images</h3></div>
   <div class="facts"><span><b>Time:</b> about 3 hours</span><span><b>Where:</b> Content → Files, and product media for 4 videos</span><span><b>Needs first:</b> <a href="#d2" style="color:var(--accent)">D2</a></span></div>
-  <p>The <a href="tasc-images-missing-alt-text.csv" style="color:var(--accent)"><strong>image list</strong></a> (CSV) has every image on the site that's missing a description: 145 in total, found by scanning all 995 pages. Each row has a suggested description written after looking at the picture, how many pages the image appears on, and where to enter the text. Many banners come in desktop and mobile pairs, so the 130 images that need text need only 91 different descriptions. The other 15 should be marked decorative or handed to a developer or app vendor.</p>
+  <p>The <a href="tasc-images-missing-alt-text.csv" style="color:var(--accent)"><strong>image list</strong></a> (CSV) has every image on the site that's missing a description: 150 in total, found by scanning all 995 pages and cross-checking against Screaming Frog and Sitebulb crawls. Each row has a suggested description written after looking at the picture, how many pages the image appears on, and where to enter the text. Many banners come in desktop and mobile pairs, so the 131 images that need text need only 92 different descriptions. The other 19 should be marked decorative, left as they are, or handed to a developer or app vendor.</p>
   <ol class="steps">
     <li><strong>For most images:</strong> Content → Files, search the file name from the list, open it and paste the description into <strong>Alt text</strong>. It shows on the site once D2 is live.</li>
     <li><strong>For the four product videos</strong> (rows 47, 67, 73, 74): open the product, click the video in Media, and choose <strong>Add alt text</strong>.</li>
     <li><strong>Graphics with words in them</strong> ("It's all in the details", the Motion Short feature graphic, the review-count banners, the fit comparisons) need a description that repeats the words, because a screen reader can't read text inside an image.</li>
+    <li><strong>Add "ID.me" to the ID.me logo</strong> on the Community Discounts page (row 146). It currently has an empty description, so screen readers skip the one sign that discounts are verified through ID.me.</li>
     <li><strong>Confirm three names</strong> taken from file names: Alex Smalley, Eric Cole and Trey Winstead.</li>
     <li><strong>Delete one empty image</strong> in the blog post "Essential features to look for in men's running outfits" (row 26). It has no picture in it.</li>
   </ol>
