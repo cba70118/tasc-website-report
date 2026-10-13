@@ -388,7 +388,7 @@ table.sum a{color:var(--accent)}
   <p>All four stores currently share one page, <a href="https://www.tascperformance.com/pages/tasc-performance-magazine-street" target="_blank" rel="noopener" style="color:var(--accent)">/pages/tasc-performance-magazine-street</a>, which is where the footer's "Our Stores" link goes. Despite the address, it lists every store. Its title is "tasc Performance | Store Locations &amp; Shop Info". It has no main heading, no search description, and no location data apart from a breadcrumb. The location data the site does have sits on the homepage, where all four stores point to the homepage as their web address. So a search like "tasc Dallas" or "activewear store Houston" has no page that is actually about that store. One page per store is the standard way retailers show up in local and map results, and it gives each store's Google Business Profile a specific page to link to.</p>
   <div class="tablewrap">
     <table>
-      <thead><tr><th>Store</th><th>Address</th><th>Phone</th><th>Suggested address (ordinary pages; a metaobject gives <code>/pages/store/…</code>)</th></tr></thead>
+      <thead><tr><th>Store</th><th>Address</th><th>Phone</th><th>Page address</th></tr></thead>
       <tbody>
         <tr><td>New Orleans, LA</td><td>3913 Magazine St., New Orleans, LA 70115</td><td style="white-space:nowrap">(504) 304-5030</td><td><code>/pages/tasc-new-orleans</code></td></tr>
         <tr><td>Dallas, TX</td><td>5710 W Lovers Ln., Suite 103, Dallas, TX 75209</td><td style="white-space:nowrap">(214) 945-0943</td><td><code>/pages/tasc-dallas</code></td></tr>
@@ -398,10 +398,8 @@ table.sum a{color:var(--accent)}
     </table>
   </div>
   <ol class="steps">
-    <li><strong>Make one store template.</strong> There are two ways to do it:
-      <br><b>Preferred: a "Store" metaobject.</b> In Content → Metaobjects, create a Store definition with web pages turned on. Give it fields for name, street, city, state, ZIP, phone, opening hours, photo, a short intro, map link and Google Business Profile link. One template then renders all four stores, the content team edits fields rather than layout, and adding a fifth store takes minutes. The addresses come out as <code>/pages/store/new-orleans</code> and so on.
-      <br><b>Simpler: a <code>page.store</code> template</b> applied to four ordinary pages.
-      <br>Either way, the template shows the store name as the page's main heading, then the address, a tap-to-call phone number, the hours, a "Get directions" link to Google Maps, a map, a photo, the intro copy, links to the main collections, and a link back to all stores.</li>
+    <li><strong>Make one store template.</strong> Create a <code>page.store</code> template and apply it to four ordinary pages, which keeps the short <code>/pages/tasc-dallas</code> style of address. Give the pages fields (page metafields) for street, city, state, ZIP, phone, opening hours, photo, map link and Google Business Profile link, so content edits fields rather than layout and the same details feed the location data below.
+      <br>The template shows the store name as the page's main heading, then the address, a tap-to-call phone number, the hours, a "Get directions" link to Google Maps, a map, a photo, the intro copy, links to the main collections, and a link back to all stores.</li>
     <li><strong>Add location data to each store page.</strong> Use <code>ClothingStore</code>, the clothing-shop type of LocalBusiness, filled from the template's fields. Here is the New Orleans output:
 <pre><code>&lt;script type="application/ld+json"&gt;
 {
