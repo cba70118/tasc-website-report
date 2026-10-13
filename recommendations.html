@@ -261,17 +261,19 @@ table.sum a{color:var(--accent)}
   <a href="#d2">D2 Image descriptions (theme)</a>
   <a href="#d3">D3 Search descriptions</a>
   <a href="#d4">D4 Header logo size</a>
+  <a href="#d5">D5 Store page template</a>
   <a href="#content">For content and writers</a>
   <a href="#c1">C1 Homepage listing</a>
   <a href="#c2">C2 Free-shipping wording</a>
   <a href="#c3">C3 Image descriptions</a>
+  <a href="#c4">C4 Store pages</a>
   <a href="index.html">Status report →</a>
 </nav>
 
 <header>
   <div class="brandbar">tasc Performance<span>Recommendations</span></div>
   <h1>What to change, and who does it</h1>
-  <div class="meta"><span>tascperformance.com</span><span>As of 7 October 2026</span><span>Living document</span></div>
+  <div class="meta"><span>tascperformance.com</span><span>Updated 13 October 2026</span><span>Living document</span></div>
   <p class="lede">Practical changes drawn from the <a class="backlink" href="index.html">website status report</a>, split by who carries them out. Each one is small enough to finish in an afternoon or less. New recommendations will be added as they come up.</p>
 </header>
 
@@ -285,9 +287,11 @@ table.sum a{color:var(--accent)}
         <tr><td><a href="#d2">D2</a></td><td>Make the theme output image descriptions</td><td>Developer</td><td>About 1–1.5 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#d3">D3</a></td><td>Stop product descriptions being cut off in search results</td><td>Developer</td><td>About 15 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#d4">D4</a></td><td>Give the header logo a size, so the page stops jumping</td><td>Developer</td><td>About 10 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#d5">D5</a></td><td>Build a page for each store, with location data Google can read</td><td>Developer</td><td>About 3–4 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#c1">C1</a></td><td>Rewrite the homepage title and description</td><td>Content</td><td>About 15 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#c2">C2</a></td><td>Update the free-shipping amount in collection descriptions</td><td>Content</td><td>About 10 min</td><td><span class="pill p-warn">Proposed</span></td></tr>
         <tr><td><a href="#c3">C3</a></td><td>Write descriptions for 131 images (<a href="tasc-images-missing-alt-text.csv">image list</a>)</td><td>Content</td><td>About 3 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
+        <tr><td><a href="#c4">C4</a></td><td>Write the four store pages and link them from Google Business Profiles</td><td>Content</td><td>About 3 hours</td><td><span class="pill p-warn">Proposed</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -378,6 +382,61 @@ table.sum a{color:var(--accent)}
   </ol>
 </section>
 
+<section class="rec" aria-labelledby="d5">
+  <div class="rec-head"><span class="rec-id">D5</span><h3 id="d5">Build a page for each store, with location data Google can read</h3></div>
+  <div class="facts"><span><b>Time:</b> about 3–4 hours</span><span><b>Where:</b> a new store page template, the store hub page, homepage location data</span><span><b>Affects:</b> 4 stores, plus the "Our Stores" page</span></div>
+  <p>All four stores currently share one page, <a href="https://www.tascperformance.com/pages/tasc-performance-magazine-street" target="_blank" rel="noopener" style="color:var(--accent)">/pages/tasc-performance-magazine-street</a>, which is where the footer's "Our Stores" link goes. Despite the address, it lists every store. Its title is "tasc Performance | Store Locations &amp; Shop Info". It has no main heading, no search description, and no location data apart from a breadcrumb. The location data the site does have sits on the homepage, where all four stores point to the homepage as their web address. So a search like "tasc Dallas" or "activewear store Houston" has no page that is actually about that store. One page per store is the standard way retailers show up in local and map results, and it gives each store's Google Business Profile a specific page to link to.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Store</th><th>Address</th><th>Phone</th><th>Suggested address (ordinary pages; a metaobject gives <code>/pages/store/…</code>)</th></tr></thead>
+      <tbody>
+        <tr><td>New Orleans, LA</td><td>3913 Magazine St., New Orleans, LA 70115</td><td style="white-space:nowrap">(504) 304-5030</td><td><code>/pages/tasc-new-orleans</code></td></tr>
+        <tr><td>Dallas, TX</td><td>5710 W Lovers Ln., Suite 103, Dallas, TX 75209</td><td style="white-space:nowrap">(214) 945-0943</td><td><code>/pages/tasc-dallas</code></td></tr>
+        <tr><td>Houston, TX</td><td>5510 Morningside Dr. #160, Houston, TX 77005</td><td style="white-space:nowrap">(713) 297-8312</td><td><code>/pages/tasc-houston</code></td></tr>
+        <tr><td>Birmingham, AL</td><td>370 Rele St., Mountain Brook, AL 35223</td><td style="white-space:nowrap">(659) 599-9240</td><td><code>/pages/tasc-birmingham</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ol class="steps">
+    <li><strong>Make one store template.</strong> There are two ways to do it:
+      <br><b>Preferred: a "Store" metaobject.</b> In Content → Metaobjects, create a Store definition with web pages turned on. Give it fields for name, street, city, state, ZIP, phone, opening hours, photo, a short intro, map link and Google Business Profile link. One template then renders all four stores, the content team edits fields rather than layout, and adding a fifth store takes minutes. The addresses come out as <code>/pages/store/new-orleans</code> and so on.
+      <br><b>Simpler: a <code>page.store</code> template</b> applied to four ordinary pages.
+      <br>Either way, the template shows the store name as the page's main heading, then the address, a tap-to-call phone number, the hours, a "Get directions" link to Google Maps, a map, a photo, the intro copy, links to the main collections, and a link back to all stores.</li>
+    <li><strong>Add location data to each store page.</strong> Use <code>ClothingStore</code>, the clothing-shop type of LocalBusiness, filled from the template's fields. Here is the New Orleans output:
+<pre><code>&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "ClothingStore",
+  "name": "tasc Performance New Orleans",
+  "url": "https://www.tascperformance.com/pages/tasc-new-orleans",
+  "telephone": "+1-504-304-5030",
+  "image": "{{ store photo | image_url: width: 1200 }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "3913 Magazine St.",
+    "addressLocality": "New Orleans",
+    "addressRegion": "LA",
+    "postalCode": "70115",
+    "addressCountry": "US"
+  },
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      "opens": "10:00", "closes": "17:30" },
+    { "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Sunday", "opens": "12:00", "closes": "16:00" }
+  ],
+  "parentOrganization": { "@type": "Organization", "name": "tasc Performance", "url": "https://www.tascperformance.com" }
+}
+&lt;/script&gt;</code></pre></li>
+    <li><strong>Point the homepage location data at the new pages.</strong> The four LocalBusiness entries on the homepage currently use <code>"url": "https://www.tascperformance.com"</code>. Change each one to its store page, or remove them once each store page carries its own.</li>
+    <li><strong>Tidy the hub page.</strong> Make "tasc Store Locations" the page's main heading (it is currently a sub-heading), and link each store card to its new page.</li>
+    <li><strong>Fix the phone links.</strong> They are currently written as <code>tel:(504) 304-5030</code>. Use <code>tel:+15043045030</code>, which every phone dials reliably.</li>
+    <li><strong>Check it:</strong> run each store page through Google's <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener" style="color:var(--accent)">Rich Results Test</a>. It should find one valid local business with the right address and hours. Then ask Google to index each page using Search Console's URL Inspection.</li>
+  </ol>
+  <div class="callout"><p><strong>Keep the hub page's address, or change it carefully.</strong> <code>tasc-performance-magazine-street</code> is a misleading address for an all-stores page, but Google already ranks it and the footer links to it. If you rename it (to <code>/pages/stores</code>, for example), tick Shopify's "Create a URL redirect" box when you change the handle, and update the footer link.</p></div>
+</section>
+
 <!-- ================= FOR CONTENT AND WRITERS ================= -->
 <section class="problem audience" aria-labelledby="content">
   <span class="label">Section 2</span>
@@ -423,7 +482,25 @@ table.sum a{color:var(--accent)}
   </ol>
 </section>
 
-<footer>tasc Performance · Recommendations · As of 7 October 2026 · <a class="backlink" href="index.html">Website status report</a></footer>
+<section class="rec" aria-labelledby="c4">
+  <div class="rec-head"><span class="rec-id">C4</span><h3 id="c4">Write the four store pages and link them from Google Business Profiles</h3></div>
+  <div class="facts"><span><b>Time:</b> about 3 hours (45 min per store)</span><span><b>Where:</b> Online Store → Pages (or Content → Metaobjects → Store), and each store's Google Business Profile</span><span><b>Needs first:</b> <a href="#d5" style="color:var(--accent)">D5</a></span></div>
+  <p>Each store page needs its own words, about 200–300 of them. Four copies of the same text with the city swapped tend not to rank, and they don't help a shopper deciding whether to visit. Write about what is true and specific to each store. Store managers usually know this best.</p>
+  <ol class="steps">
+    <li><strong>For each store, cover:</strong> how to find it (nearby landmarks, which side of the street, which shopping centre), parking, what shoppers can do there (try on fits, see the full golf range, get help with sizing), any local partnerships or events, and real photos of the storefront and the inside of the shop, each with a description. Ask tasc before writing about services such as in-store returns of online orders or picking up online orders in store.</li>
+    <li><strong>Search titles and descriptions.</strong> These include "tasc Performance", so the theme won't add the brand again:
+      <div class="copy">tasc Performance New Orleans | Magazine Street Store<small>Title, 52 characters. Description (141): Shop tasc bamboo activewear at our Magazine Street store in New Orleans, where tasc began. Store hours, directions and phone: (504) 304-5030.</small></div>
+      <div class="copy">tasc Performance Dallas | W Lovers Lane Store<small>Title, 45 characters. Description (143): Visit tasc at 5710 W Lovers Ln in Dallas to try on bamboo performance tees, polos and pants. Store hours, directions and phone: (214) 945-0943.</small></div>
+      <div class="copy">tasc Performance Houston | Morningside Drive Store<small>Title, 50 characters. Description (147): Visit tasc at 5510 Morningside Dr in Houston to try on bamboo performance tees, polos and pants. Store hours, directions and phone: (713) 297-8312. If locals know the area by a neighbourhood name, use it in the title instead of the street.</small></div>
+      <div class="copy">tasc Performance Birmingham | Mountain Brook Store<small>Title, 50 characters. Description (147): Visit tasc at 370 Rele St in Mountain Brook, Birmingham, to try on bamboo tees, polos and pants. Store hours, directions and phone: (659) 599-9240.</small></div>
+      <div class="copy">tasc Performance Store Locations &amp; Hours<small>For the existing all-stores page, which currently has no description. Title, 40 characters. Description (142): Find a tasc Performance store in New Orleans, Dallas, Houston or Mountain Brook (Birmingham), with addresses, opening hours and phone numbers.</small></div>
+    </li>
+    <li><strong>Link each Google Business Profile to its own page.</strong> In each store's profile, set the website to that store's page instead of the homepage. Add <code>?utm_source=google&amp;utm_medium=organic&amp;utm_campaign=gbp</code> to the end so these visits show up separately in analytics. While you're there, check that the hours and phone number match the store page exactly. Google trusts listings more when they agree.</li>
+    <li><strong>Keep them current.</strong> When hours change, for holidays or permanently, update the store page and the Business Profile on the same day.</li>
+  </ol>
+</section>
+
+<footer>tasc Performance · Recommendations · Updated 13 October 2026 · <a class="backlink" href="index.html">Website status report</a></footer>
 </div>
 <script>
 (function(){
