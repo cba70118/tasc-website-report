@@ -390,15 +390,15 @@ table.sum a{color:var(--accent)}
     <table>
       <thead><tr><th>Store</th><th>Address</th><th>Phone</th><th>Page address</th></tr></thead>
       <tbody>
-        <tr><td>New Orleans, LA</td><td>3913 Magazine St., New Orleans, LA 70115</td><td style="white-space:nowrap">(504) 304-5030</td><td><code>/pages/tasc-new-orleans</code></td></tr>
-        <tr><td>Dallas, TX</td><td>5710 W Lovers Ln., Suite 103, Dallas, TX 75209</td><td style="white-space:nowrap">(214) 945-0943</td><td><code>/pages/tasc-dallas</code></td></tr>
-        <tr><td>Houston, TX</td><td>5510 Morningside Dr. #160, Houston, TX 77005</td><td style="white-space:nowrap">(713) 297-8312</td><td><code>/pages/tasc-houston</code></td></tr>
-        <tr><td>Birmingham, AL</td><td>370 Rele St., Mountain Brook, AL 35223</td><td style="white-space:nowrap">(659) 599-9240</td><td><code>/pages/tasc-birmingham</code></td></tr>
+        <tr><td>New Orleans, LA</td><td>3913 Magazine St., New Orleans, LA 70115</td><td style="white-space:nowrap">(504) 304-5030</td><td><code>/pages/our-stores/tasc-new-orleans</code></td></tr>
+        <tr><td>Dallas, TX</td><td>5710 W Lovers Ln., Suite 103, Dallas, TX 75209</td><td style="white-space:nowrap">(214) 945-0943</td><td><code>/pages/our-stores/tasc-dallas</code></td></tr>
+        <tr><td>Houston, TX</td><td>5510 Morningside Dr. #160, Houston, TX 77005</td><td style="white-space:nowrap">(713) 297-8312</td><td><code>/pages/our-stores/tasc-houston</code></td></tr>
+        <tr><td>Birmingham, AL</td><td>370 Rele St., Mountain Brook, AL 35223</td><td style="white-space:nowrap">(659) 599-9240</td><td><code>/pages/our-stores/tasc-birmingham</code></td></tr>
       </tbody>
     </table>
   </div>
   <ol class="steps">
-    <li><strong>Make one store template.</strong> Create a <code>page.store</code> template and apply it to four ordinary pages, which keeps the short <code>/pages/tasc-dallas</code> style of address. Give the pages fields (page metafields) for street, city, state, ZIP, phone, opening hours, photo, map link and Google Business Profile link, so content edits fields rather than layout and the same details feed the location data below.
+    <li><strong>Make one store template.</strong> In Content → Metaobjects, create a "Store" definition with web pages turned on and its URL handle set to <code>our-stores</code>. Give it fields for name, street, city, state, ZIP, phone, opening hours, photo, a short intro, map link and Google Business Profile link. Add one entry per store with handles <code>tasc-new-orleans</code>, <code>tasc-dallas</code>, <code>tasc-houston</code> and <code>tasc-birmingham</code>, giving addresses like <code>/pages/our-stores/tasc-dallas</code>. One template renders all four, content edits fields rather than layout, and the same details feed the location data below.
       <br>The template shows the store name as the page's main heading, then the address, a tap-to-call phone number, the hours, a "Get directions" link to Google Maps, a map, a photo, the intro copy, links to the main collections, and a link back to all stores.</li>
     <li><strong>Add location data to each store page.</strong> Use <code>ClothingStore</code>, the clothing-shop type of LocalBusiness, filled from the template's fields. Here is the New Orleans output:
 <pre><code>&lt;script type="application/ld+json"&gt;
@@ -406,7 +406,7 @@ table.sum a{color:var(--accent)}
   "@context": "https://schema.org",
   "@type": "ClothingStore",
   "name": "tasc Performance New Orleans",
-  "url": "https://www.tascperformance.com/pages/tasc-new-orleans",
+  "url": "https://www.tascperformance.com/pages/our-stores/tasc-new-orleans",
   "telephone": "+1-504-304-5030",
   "image": "{{ store photo | image_url: width: 1200 }}",
   "address": {
@@ -428,11 +428,11 @@ table.sum a{color:var(--accent)}
 }
 &lt;/script&gt;</code></pre></li>
     <li><strong>Point the homepage location data at the new pages.</strong> The four LocalBusiness entries on the homepage currently use <code>"url": "https://www.tascperformance.com"</code>. Change each one to its store page, or remove them once each store page carries its own.</li>
-    <li><strong>Tidy the hub page.</strong> Make "tasc Store Locations" the page's main heading (it is currently a sub-heading), and link each store card to its new page.</li>
+    <li><strong>Rename the hub page.</strong> Change the current page's handle from <code>tasc-performance-magazine-street</code> to <code>our-stores</code>, ticking Shopify's "Create a URL redirect" box so the old address (and its Google ranking) carries over. Update the footer's "Our Stores" link. Make "tasc Store Locations" the page's main heading (it is currently a sub-heading), and link each store card to its new page.</li>
     <li><strong>Fix the phone links.</strong> They are currently written as <code>tel:(504) 304-5030</code>. Use <code>tel:+15043045030</code>, which every phone dials reliably.</li>
     <li><strong>Check it:</strong> run each store page through Google's <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener" style="color:var(--accent)">Rich Results Test</a>. It should find one valid local business with the right address and hours. Then ask Google to index each page using Search Console's URL Inspection.</li>
   </ol>
-  <div class="callout"><p><strong>Keep the hub page's address, or change it carefully.</strong> <code>tasc-performance-magazine-street</code> is a misleading address for an all-stores page, but Google already ranks it and the footer links to it. If you rename it (to <code>/pages/stores</code>, for example), tick Shopify's "Create a URL redirect" box when you change the handle, and update the footer link.</p></div>
+  <div class="callout"><p><strong>Check before launch.</strong> Shopify requires the <code>/pages/</code> prefix, so a root-level <code>/our-stores/</code> isn't possible. Confirm on a preview theme that the hub page (<code>/pages/our-stores</code>) and the store pages (<code>/pages/our-stores/…</code>) can share the <code>our-stores</code> name. If Shopify won't allow it, name the hub <code>/pages/stores</code> instead.</p></div>
 </section>
 
 <!-- ================= FOR CONTENT AND WRITERS ================= -->
